@@ -1,7 +1,7 @@
 package common;
 
 public class File {
-	final String filename;
+	public final String filename;
 	
 	public File( String filename ) {
 		

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class User {
 
-	final String name;
+	public final String name;
 	public ArrayList<File> files;
 	
 	public User(String username) {
