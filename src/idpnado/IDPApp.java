@@ -4,24 +4,31 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
+import mediator.Mediator;
+
 public class IDPApp {
 
-	private JFrame frame;
+	private MainFrame frame;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					IDPApp window = new IDPApp();
 					window.frame.setVisible(true);
+
+					new Thread(new Mediator(window.frame)).start();
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
+
 	}
 
 	/**
@@ -36,7 +43,7 @@ public class IDPApp {
 	 */
 	private void initialize() {
 		frame = new MainFrame();
-		
+
 	}
 
 }

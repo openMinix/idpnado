@@ -2,7 +2,6 @@ package idpnado;
 
 import java.awt.Component;
 
-import javax.swing.BoundedRangeModel;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
