@@ -9,30 +9,37 @@ import mediator.RandomEventGenerator;
 
 public class IDPApp {
 
-	private JFrame frame;
+	private MainFrame frame;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
+				try
+				{
 					Mediator mediator = new Mediator();
-					
+					new Thread(new Mediator(window.frame)).start();
+
 					IDPApp window = new IDPApp();
 					window.frame.setVisible(true);
 					window.frame.setLocation(100, 200);
-					
-					mediator.attachMainFrame((MainFrame) window.frame); 
-					
+
+					mediator.attachMainFrame((MainFrame) window.frame);
+
 					RandomEventGenerator reg = new RandomEventGenerator(mediator);
 					reg.generateEvents();
-				} catch (Exception e) {
+
+				}
+				catch (Exception e)
+				{
 					e.printStackTrace();
 				}
 			}
 		});
+
 	}
 
 	/**
@@ -47,7 +54,7 @@ public class IDPApp {
 	 */
 	private void initialize() {
 		frame = new MainFrame();
-		
+
 	}
 
 }
