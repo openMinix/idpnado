@@ -2,8 +2,6 @@ package idpnado;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-
 import mediator.Mediator;
 import mediator.RandomEventGenerator;
 
@@ -21,7 +19,8 @@ public class IDPApp {
 				try
 				{
 					Mediator mediator = new Mediator();
-					new Thread(new Mediator(window.frame)).start();
+
+					new Thread(new Mediator()).start();
 
 					IDPApp window = new IDPApp();
 					window.frame.setVisible(true);
