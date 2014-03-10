@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -33,6 +34,7 @@ public class MainFrame extends JFrame {
 	private DefaultListModel<User> usersModel;
 	private DefaultListModel<File> filesModel;
 	private DownloadsTableModel dtm;
+	
 
 	/**
 	 * Create the frame.
@@ -91,6 +93,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 
+
 		GridBagConstraints gbc_filesList = new GridBagConstraints();
 		gbc_filesList.gridheight = 2;
 		gbc_filesList.insets = new Insets(0, 0, 5, 5);
@@ -109,6 +112,13 @@ public class MainFrame extends JFrame {
 			return;
 		
 		usersModel.get(elementIndex).files.add(file);
+		
+		//add file to current view if necessary
+		int selectedIndex = usersList.getSelectedIndex();
+		if(selectedIndex == -1 || !usersModel.get(selectedIndex).equals(user))
+			return;
+		
+		filesModel.addElement(file);
 	}
 	
 	public void removeFileFromUser(User user, File file)
@@ -118,6 +128,13 @@ public class MainFrame extends JFrame {
 			return;
 		
 		usersModel.get(elementIndex).files.remove(file);
+
+		//remove file from current view if necessary		
+		int selectedIndex = usersList.getSelectedIndex();
+		if(selectedIndex == -1 || !usersModel.get(selectedIndex).equals(user))
+			return;
+		
+		filesModel.addElement(file);		
 	}
 	
 	public void addUser(User user)
@@ -142,10 +159,18 @@ public class MainFrame extends JFrame {
 			{
 				filesModel.clear();
 				System.out.println("INTRU AICI");
-				ArrayList<File> files = usersList.getSelectedValue().getFiles();
+				try
+				{
+					ArrayList<File> files = usersList.getSelectedValue().getFiles();
 
-				for (File f : files) {
-					filesModel.addElement(f);
+					for (File f : files)
+					{
+						filesModel.addElement(f);
+					}
+				}
+				catch(NullPointerException ex)
+				{
+					
 				}
 
 			}

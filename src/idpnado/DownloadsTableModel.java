@@ -19,7 +19,7 @@ public class DownloadsTableModel extends DefaultTableModel {
 
 	public DownloadsTableModel()
 	{
-		super( new String[]{"Source","Destination","Filename","Progress","State" }, 3);
+		super( new String[]{"Source","Destination","Filename","Progress","State" }, 0);
 		
 		
 	}
