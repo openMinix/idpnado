@@ -1,0 +1,23 @@
+<project name="IDPApp" default="run" basedir=".">
+	<description> Proiect IDP </description>
+	<property name="user1" value="user1"/>
+	<property name="user2" value="user2"/>
+
+	<target name="run" depends="build">
+		<java classname="idpnado.IDPApp" fork="true">
+			<classpath path="bin"/>
+			<arg value="${user1}"/>
+		</java>
+	</target>
+
+	<target name="build">
+		<mkdir dir="bin"/>
+		<javac includeantruntime="false"
+			srcdir="src"
+			destdir="bin"/>
+	</target>
+
+	<target name="clean">
+		<delete dir="bin"/>
+	</target>
+</project>
