@@ -98,7 +98,18 @@ public class MainFrame extends JFrame {
 		
 		
 	}
-
+	
+	public void addUser(User user)
+	{
+		if(!usersModel.contains(user))
+			usersModel.addElement(user);
+	}
+	
+	public void removeUser(User user)
+	{
+		usersModel.removeElement(user);
+	}
+	
 	private void usersInit() {
 
 		

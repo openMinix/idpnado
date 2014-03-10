@@ -4,6 +4,9 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
+import mediator.Mediator;
+import mediator.RandomEventGenerator;
+
 public class IDPApp {
 
 	private JFrame frame;
@@ -15,8 +18,16 @@ public class IDPApp {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					Mediator mediator = new Mediator();
+					
 					IDPApp window = new IDPApp();
 					window.frame.setVisible(true);
+					window.frame.setLocation(100, 200);
+					
+					mediator.attachMainFrame((MainFrame) window.frame); 
+					
+					RandomEventGenerator reg = new RandomEventGenerator(mediator);
+					reg.generateEvents();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

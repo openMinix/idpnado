@@ -20,6 +20,16 @@ public class User {
 	}
 	
 	@Override
+	public boolean equals(Object obj) 
+	{
+		User user = (User) obj;
+		if(user.name.equals(name))
+			return true;
+		
+		return false;
+	}
+	
+	@Override
 	public String toString() {
 		
 		return name;
