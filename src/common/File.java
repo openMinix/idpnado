@@ -18,6 +18,16 @@ public class File implements Serializable{
 	}
 	
 	@Override
+	public boolean equals(Object obj)
+	{
+		File file = (File) obj;
+		if(file.filename.equals(filename))
+			return true;
+		
+		return false;
+	}
+	
+	@Override
 	public String toString() {
 		
 		return filename;

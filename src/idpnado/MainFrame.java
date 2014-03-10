@@ -69,7 +69,11 @@ public class MainFrame extends JFrame {
 			public void mouseClicked(MouseEvent evt) {
 
 				if (evt.getClickCount() == 2) {
-					int index = filesList.locationToIndex(evt.getPoint());
+//					int index = filesList.locationToIndex(evt.getPoint());
+					int index = filesList.getSelectedIndex();
+					
+					if(index == -1)
+						return;
 
 					System.out.println("Selecte value is " + index
 							+ "dim lista" + filesList.getModel().getSize());
@@ -98,6 +102,24 @@ public class MainFrame extends JFrame {
 
 	}
 	
+	public void addFileToUser(User user, File file)
+	{
+		int elementIndex = usersModel.indexOf(user);
+		if(elementIndex == -1)
+			return;
+		
+		usersModel.get(elementIndex).files.add(file);
+	}
+	
+	public void removeFileFromUser(User user, File file)
+	{
+		int elementIndex = usersModel.indexOf(user);
+		if(elementIndex == -1)
+			return;
+		
+		usersModel.get(elementIndex).files.remove(file);
+	}
+	
 	public void addUser(User user)
 	{
 		if(!usersModel.contains(user))
@@ -116,8 +138,8 @@ public class MainFrame extends JFrame {
 		usersList.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
-			public void valueChanged(ListSelectionEvent e) {
-
+			public void valueChanged(ListSelectionEvent e)
+			{
 				filesModel.clear();
 				System.out.println("INTRU AICI");
 				ArrayList<File> files = usersList.getSelectedValue().getFiles();
