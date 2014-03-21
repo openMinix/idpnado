@@ -17,6 +17,16 @@ public class User implements Serializable{
 		files = new ArrayList<>();
 	}
 	
+	public void addFile(File file)
+	{
+		files.add(file);
+	}
+	
+	public void removeFile(File file)
+	{
+		files.remove(file);
+	}
+	
 	
 	public ArrayList<File> getFiles()
 	{

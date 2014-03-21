@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import mediator.Mediator;
 import common.File;
 import common.User;
 
@@ -27,19 +28,24 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 5058979263127835567L;
 	private JPanel contentPane;
 
-	private JList<User> usersList;
-	private JList<File> filesList;
+	private JList<String> usersList;
+	private JList<String> filesList;
 	private DownloadsJTable downloadsTable;
 
-	private DefaultListModel<User> usersModel;
-	private DefaultListModel<File> filesModel;
+	private DefaultListModel<String> usersModel;
+	private DefaultListModel<String> filesModel;
 	private DownloadsTableModel dtm;
+	
+	private Mediator mediator;
 	
 
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame() {
+	public MainFrame(Mediator mediator) {
+		
+		this.mediator = mediator;
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 850, 500);
 
@@ -65,7 +71,7 @@ public class MainFrame extends JFrame {
 	private void filesInit() {
 
 		filesModel = new DefaultListModel<>();
-		filesList = new JList<File>(filesModel);
+		filesList = new JList<String>(filesModel);
 
 		filesList.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent evt) {
@@ -80,9 +86,9 @@ public class MainFrame extends JFrame {
 					System.out.println("Selecte value is " + index
 							+ "dim lista" + filesList.getModel().getSize());
 					System.out.println(usersList.getSelectedIndex());
-					String filename = "lala";
-					filename = filesList.getModel().getElementAt(index).filename;
-					String source = usersList.getSelectedValue().name;
+					
+					String filename = filesList.getModel().getElementAt(index);
+					String source = usersList.getSelectedValue();
 					String destination = "me";
 					String state = TransferState.Receiving.name();
 					int progress = 70;
@@ -105,53 +111,49 @@ public class MainFrame extends JFrame {
 
 	}
 	
-	public void addFileToUser(User user, File file)
+	public void addFileToUser(String userName, String fileName)
 	{
-		int elementIndex = usersModel.indexOf(user);
+		int elementIndex = usersModel.indexOf(userName);
 		if(elementIndex == -1)
 			return;
-		
-		usersModel.get(elementIndex).files.add(file);
 		
 		//add file to current view if necessary
 		int selectedIndex = usersList.getSelectedIndex();
-		if(selectedIndex == -1 || !usersModel.get(selectedIndex).equals(user))
+		if(selectedIndex == -1 || !usersModel.get(selectedIndex).equals(userName))
 			return;
 		
-		filesModel.addElement(file);
+		filesModel.addElement(fileName);
 	}
 	
-	public void removeFileFromUser(User user, File file)
+	public void removeFileFromUser(String userName, String fileName)
 	{
-		int elementIndex = usersModel.indexOf(user);
+		int elementIndex = usersModel.indexOf(userName);
 		if(elementIndex == -1)
 			return;
-		
-		usersModel.get(elementIndex).files.remove(file);
 
 		//remove file from current view if necessary		
 		int selectedIndex = usersList.getSelectedIndex();
-		if(selectedIndex == -1 || !usersModel.get(selectedIndex).equals(user))
+		if(selectedIndex == -1 || !usersModel.get(selectedIndex).equals(userName))
 			return;
 		
-		filesModel.addElement(file);		
+		filesModel.addElement(fileName);		
 	}
 	
-	public void addUser(User user)
+	public void addUser(String userName)
 	{
-		if(!usersModel.contains(user))
-			usersModel.addElement(user);
+		if(!usersModel.contains(userName))
+			usersModel.addElement(userName);
 	}
 	
-	public void removeUser(User user)
+	public void removeUser(String userName)
 	{
-		usersModel.removeElement(user);
+		usersModel.removeElement(userName);
 	}
 	
 	private void usersInit() {
 
 		usersModel = new DefaultListModel<>();
-		usersList = new JList<User>(usersModel);
+		usersList = new JList<String>(usersModel);
 		usersList.addListSelectionListener(new ListSelectionListener() {
 
 			@Override
@@ -161,11 +163,21 @@ public class MainFrame extends JFrame {
 				System.out.println("INTRU AICI");
 				try
 				{
-					ArrayList<File> files = usersList.getSelectedValue().getFiles();
+					int index = usersList.getSelectedIndex();
+					if(index == -1)
+						return;
+					
+					ArrayList<String> fileNames;
+					
+					if(index == 0)
+						fileNames = mediator.getMyFiles();
+					else
+						fileNames = mediator.getFiles(usersList.getSelectedValue());
+					
 
-					for (File f : files)
+					for (String fileName : fileNames)
 					{
-						filesModel.addElement(f);
+						filesModel.addElement(fileName);
 					}
 				}
 				catch(NullPointerException ex)
@@ -182,19 +194,23 @@ public class MainFrame extends JFrame {
 		gbc_usersList.gridx = 5;
 		gbc_usersList.gridy = 1;
 		gbc_usersList.gridwidth = 2;
+		
+		usersModel.addElement(mediator.getMyName());
+		contentPane.add(usersList, gbc_usersList);		
+		
 
-		User u1 = new User("user1");
-		u1.files.add(new File("fis de la 1"));
-		u1.files.add(new File("fis2 de la 1"));
-
-		usersModel.addElement(u1);
-
-		User u2 = new User("user2");
-		u2.files.add(new File("fis de la 2"));
-		u2.files.add(new File("fis2 de la 2"));
-
-		usersModel.addElement(u2);
-		contentPane.add(usersList, gbc_usersList);
+//		User u1 = new User("user1");
+//		u1.files.add(new File("fis de la 1"));
+//		u1.files.add(new File("fis2 de la 1"));
+//
+//		usersModel.addElement(u1);
+//
+//		User u2 = new User("user2");
+//		u2.files.add(new File("fis de la 2"));
+//		u2.files.add(new File("fis2 de la 2"));
+//
+//		usersModel.addElement(u2);
+//		contentPane.add(usersList, gbc_usersList);
 	}
 
 	private void downloadsInit() {
