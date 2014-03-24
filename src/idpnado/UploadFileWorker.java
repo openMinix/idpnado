@@ -7,29 +7,26 @@ import javax.swing.SwingWorker;
 import mediator.Mediator;
 
 import common.File;
-import common.User;
 
-public class DownloadFileWorker extends SwingWorker<Integer, Integer>
+public class UploadFileWorker extends SwingWorker<Integer, Integer>
 {
 	File file;
-	User user;
 	Mediator mediator;
 	
-	public DownloadFileWorker(File file, User user, Mediator mediator)
+	public UploadFileWorker(File file, Mediator mediator)
 	{
 		this.file = file;
-		this.user = user;
 		this.mediator = mediator;
 	}
 
 	@Override
 	protected Integer doInBackground() throws Exception
-	{	
-		//TODO : if file is empty(chunkNo == 0) => progress bar might not get updated
+	{
 		try
 		{
 			for(int i = 0; i < file.chunkNo; i++)
 			{
+				mediator.getChunk(file.filename, i);
 				Thread.sleep(100);
 				publish(i);
 			}
@@ -44,8 +41,6 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 	protected void process(List<Integer> chunks)
 	{
 		int progress = ((((chunks.get(0) + 1) * 100) / file.chunkNo));
-		
-//		System.out.println(progress);
 		
 		setProgress(progress);
 	}

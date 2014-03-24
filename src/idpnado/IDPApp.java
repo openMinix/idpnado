@@ -46,8 +46,8 @@ public class IDPApp {
 
 				mediator.attachMainFrame((MainFrame) window.frame);
 
-//				RandomEventGenerator reg = new RandomEventGenerator(mediator);
-//				reg.generateEvents();
+				RandomEventGenerator reg = new RandomEventGenerator(mediator);
+				reg.generateEvents();
 
 			}
 			catch (Exception e)

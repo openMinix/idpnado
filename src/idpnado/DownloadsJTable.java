@@ -1,5 +1,6 @@
 package idpnado;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JTable;
@@ -15,19 +16,23 @@ public class DownloadsJTable extends JTable {
 	 */
 	private static final long serialVersionUID = -6713852804203019793L;
 
-	private ProgressCellRenderer pcr;
+//	private ProgressCellRenderer pcr;
+	private ArrayList<ProgressCellRenderer> progressCellRenderers;
 	
 	
-	public DownloadsJTable() {
+	public DownloadsJTable()
+	{
 		
 	}
 
 	public DownloadsJTable(TableModel dm) {
 		super(dm);
-		pcr = new ProgressCellRenderer();
+//		pcr = new ProgressCellRenderer();
 		
 	//	 getColumn("Progress").setCellRenderer(new ProgressCellRenderer());
+		progressCellRenderers = new ArrayList<>();
 	}
+	
 
 	public DownloadsJTable(TableModel dm, TableColumnModel cm) {
 		super(dm, cm);
@@ -54,13 +59,20 @@ public class DownloadsJTable extends JTable {
 		super(dm, cm, sm);
 		
 	}
+	
+	
 
 	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
 		
 		if ( column == 3)
 		{
-			return pcr;
+			if(progressCellRenderers.size() < row + 1)
+			{
+				for(int i = progressCellRenderers.size(); i < row + 1; i++)
+					progressCellRenderers.add(new ProgressCellRenderer());
+			}
+			return progressCellRenderers.get(row);
 		}
 		return super.getCellRenderer(row, column);
 	}

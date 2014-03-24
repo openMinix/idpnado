@@ -69,17 +69,59 @@ public class OnlineUsersManager
 		return fileList;
 	}
 	
-	
-	public void downloadFile(User user, File file, final JProgressBar progressBar)
+	public ArrayList<String> getOnlineUsers()
 	{
+		ArrayList<String> users = new ArrayList<>();
+		
+		for(User onlineUser : onlineUsers)
+		{
+			users.add(onlineUser.name);
+		}
+		
+		return users;
+	}
+	
+	
+	public void downloadFile(final String userName, final String fileName, final JProgressBar progressBar)
+	{
+		int index = onlineUsers.indexOf(new User(userName));
+		if(index == -1)	//TODO : throw exception
+			return;
+		User user = onlineUsers.get(index);
+		
+		index = user.files.indexOf(new File(fileName));
+		if(index == -1) //TODO : throw exception
+			return;
+		final File file = user.files.get(index);
+			
 		DownloadFileWorker worker = new DownloadFileWorker(file, user, mediator);
 		worker.addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt)
 			{
-				progressBar.setValue(((Integer)evt.getNewValue()).intValue());
+				if(evt.getNewValue().getClass() == Integer.class)
+				{
+//					System.out.println("class : " + evt.getNewValue().getClass());
+					int progress = ((Integer)evt.getNewValue()).intValue();
+					
+					progressBar.setValue(progress);
+					if(progress == 100)
+					{
+						mediator.updateDownloadState(userName, fileName, TransferState.Completed);
+						mediator.addFileToLocalFiles(file);
+					}
+					
+					
+					mediator.refreshDownloadTable();
+//					System.out.println("New value : " + evt.getNewValue());					
+				}
+
+				
+
 			}
 		});
+		
+		worker.execute();
 	}
 }

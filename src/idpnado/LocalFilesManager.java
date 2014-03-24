@@ -1,9 +1,12 @@
 package idpnado;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
-import mediator.Mediator;
+import javax.swing.JProgressBar;
 
+import mediator.Mediator;
 import common.File;
 import common.User;
 
@@ -15,6 +18,9 @@ public class LocalFilesManager
 	public LocalFilesManager(Mediator mediator, String myUserName)
 	{
 		me = new User(myUserName);
+		
+		addFile(new File("myFile1", 100));
+		addFile(new File("myFile2", 200));
 
 		this.mediator = mediator;
 		
@@ -48,10 +54,55 @@ public class LocalFilesManager
 		return me.name;
 	}
 	
-	public byte[] getChunk(File file, int index)
+	public byte[] getChunk(String fileName, int chunk)
 	{
-		//TODO
+		int index = me.files.indexOf(new File(fileName));
+		if(index == -1)
+			return null;
+		
+		File file = me.files.get(index);
+		
+		if(chunk >= file.chunkNo)
+			return null;
+		
+		//TODO : get actual chunk
 		return null;
+	}
+	
+	public void uploadFile(final String fileName, final String destinationName, final JProgressBar progressBar)
+	{
+		int index = me.files.indexOf(new File(fileName));
+		if(index == -1) //TODO : throw exception
+			return;
+		final File file = me.files.get(index);
+			
+		UploadFileWorker worker = new UploadFileWorker(file, mediator);
+		worker.addPropertyChangeListener(new PropertyChangeListener()
+		{	
+			@Override
+			public void propertyChange(PropertyChangeEvent evt)
+			{
+				if(evt.getNewValue().getClass() == Integer.class)
+				{
+//					System.out.println("class : " + evt.getNewValue().getClass());
+					int progress = ((Integer)evt.getNewValue()).intValue();
+					
+					progressBar.setValue(progress);
+					if(progress == 100)
+					{
+						mediator.updateUploadState(destinationName, fileName, TransferState.Completed);
+					}					
+					
+					mediator.refreshDownloadTable();
+//					System.out.println("New value : " + evt.getNewValue());					
+				}
+
+				
+
+			}
+		});
+		
+		worker.execute();		
 	}
 	
 

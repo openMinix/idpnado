@@ -17,20 +17,25 @@ public class ProgressCellRenderer extends JProgressBar implements
 
 	public ProgressCellRenderer() {
 		
-		setValue(40);
+		setValue(0);
+//		System.out.println("progress cell renderer");
 	}
 
 	
+	
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
-			boolean isSelected, boolean hasFocus, int row, int column) {
-		
-		if ( value != null)
-			setValue((int)value);
-		else
-		{
-			setValue(30);
-		}
+			boolean isSelected, boolean hasFocus, int row, int column)
+	{
+//		if ( value != null)
+//		{
+////			setValue((int)value);
+////			System.out.println("--> " + getValue());
+//		}
+//		else
+//		{
+//			setValue(30);
+//		}
 		return this;
 	}
 

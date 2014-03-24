@@ -1,5 +1,6 @@
 package idpnado;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -12,6 +13,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -82,19 +84,35 @@ public class MainFrame extends JFrame {
 					
 					if(index == -1)
 						return;
+					
+					int userIndex = usersList.getSelectedIndex();
+					if(userIndex == -1 || userIndex == 0)
+						return;
 
-					System.out.println("Selecte value is " + index
-							+ "dim lista" + filesList.getModel().getSize());
-					System.out.println(usersList.getSelectedIndex());
+//					System.out.println("Selecte value is " + index
+//							+ "dim lista" + filesList.getModel().getSize());
+//					System.out.println(usersList.getSelectedIndex());
 					
 					String filename = filesList.getModel().getElementAt(index);
 					String source = usersList.getSelectedValue();
 					String destination = "me";
 					String state = TransferState.Receiving.name();
-					int progress = 70;
+//					int progress = 70;
 
 					dtm.addRow(new Object[] { source, destination, filename,
-							progress, state });
+							0, state });
+					
+					index = dtm.getRowCount() - 1;
+//					dtm.get
+					
+//					System.out.println();
+//					System.out.println(index + "***");
+//					System.out.println(downloadsTable.getCellRenderer(index, 3).getClass());
+					
+					mediator.startDownload(source, filename, (JProgressBar)downloadsTable.getCellRenderer(index, 3));
+					
+//					mediator.
+					
 				}
 			}
 		});
@@ -109,6 +127,37 @@ public class MainFrame extends JFrame {
 		gbc_filesList.gridwidth = 3;
 		contentPane.add(filesList, gbc_filesList);
 
+	}
+	
+	public JProgressBar addUploadToDownloadTable(String fileName, String destinationName)
+	{
+		String source = "me";
+		String destination = destinationName;
+		String state = TransferState.Sending.name();
+
+		dtm.addRow(new Object[] { source, destination, fileName, 0, state });
+		
+		int index = dtm.getRowCount() - 1;
+		
+		return ((JProgressBar) downloadsTable.getCellRenderer(index, 3));		
+	}
+	
+	public void addFileToLocalFiles(String fileName)
+	{
+		int elementIndex = usersList.getSelectedIndex();
+		if(elementIndex != 0)
+			return;		
+		
+		filesModel.addElement(fileName);
+	}
+	
+	public void removeLocalFile(String fileName)
+	{
+		int elementIndex = usersList.getSelectedIndex();
+		if(elementIndex != 0)
+			return;		
+		
+		filesModel.removeElement(new File(fileName));		
 	}
 	
 	public void addFileToUser(String userName, String fileName)
@@ -150,6 +199,35 @@ public class MainFrame extends JFrame {
 		usersModel.removeElement(userName);
 	}
 	
+	public void refreshDownloadTable()
+	{
+		dtm.fireTableDataChanged();
+	}
+	
+	public void updateDownloadState(String userName, String fileName, TransferState newState)
+	{
+		for(int i = 0; i < dtm.getRowCount(); i++)
+		{
+			if(userName.equals(dtm.getValueAt(i, 0)) &&
+					fileName.equals(dtm.getValueAt(i, 2)))
+			{
+				dtm.setValueAt(newState, i, 4);
+			}
+		}
+	}
+	
+	public void updateUploadState(String userName, String fileName, TransferState newState)
+	{
+		for(int i = 0; i < dtm.getRowCount(); i++)
+		{
+			if(userName.equals(dtm.getValueAt(i, 1)) &&
+					fileName.equals(dtm.getValueAt(i, 2)))
+			{
+				dtm.setValueAt(newState, i, 4);
+			}
+		}
+	}	
+	
 	private void usersInit() {
 
 		usersModel = new DefaultListModel<>();
@@ -160,7 +238,7 @@ public class MainFrame extends JFrame {
 			public void valueChanged(ListSelectionEvent e)
 			{
 				filesModel.clear();
-				System.out.println("INTRU AICI");
+//				System.out.println("INTRU AICI");
 				try
 				{
 					int index = usersList.getSelectedIndex();
