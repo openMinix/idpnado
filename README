@@ -1,0 +1,34 @@
+Vlad Barosan, 341C3
+Nicolae Ciobanu, 341C3
+
+TODO : Design high-level?
+TODO : GUI
+
+
+Module:
+- GUI					-
+- Mediator				- realizeaza legatura intre module
+- LocalFilesManager		- memoreaza informatii despre fisierele utilizatorului curent
+- OnlineUsersManager	- memoreaza informatii despre utilizatorii conectati
+- RandomEventGenerator	- genereaza evenimente aleatoare
+
+Pentru memorarea datelor despre utilizatori am folosit 2 module:
+	- un modul care memoreaza datele despre utilizatorul conectat local.
+	- un modul care memoreaza informatii despre utilizatorii online.
+Am ales aceasta varianta pentru a putea memora informatii diferite pentru utilizatorul care foloseste aplicatia local fata de restul utilizatorilor. De asemenea, se pot implementa metode diferite de sincronizare, in functie de necesitati.
+
+In cazul interfetei grafice, singura diferenta intre utilizatorul local si cei remote este faptul ca nu se poate descarca un fisier local. In rest, in ambele cazuri lista de fisiere este obtinuta printr-un apel catre mediator.
+
+LocalFilesManager
+Acest modul memoreaza informatii despre fisierele locale. Acesta primeste o cerere de upload a unui fisier si porneste un UploadFileWorker care va servi cererea. De asemenea, in momentul descarcarii unui fisier se va adauga fisierul descarcat la lista memora in cadrul acestui modul.
+
+OnlineUsersManager
+Acest modul memoreaza informatii despre utilizatorii remote. In momentul pornirii unui download din interfata grafica se va apela, prin mediator, o metoda din aceasta clasa care va creea un DownloadFileWorker.
+
+RandomEventGenerator
+Acest modul foloseste un timer pentru a genera evenimente aleatoare. Evenimentele posibile sunt:
+- logarea unui utilizator
+- delogarea unui utilizator
+- adaugarea de fisiere utilizatorilor
+- stergerea de fisiere ale utilizatorilor remote
+- pornirea unui upload
