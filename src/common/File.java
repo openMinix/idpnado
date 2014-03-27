@@ -2,6 +2,10 @@ package common;
 
 import java.io.Serializable;
 
+/**
+ * 	Clasa File are rolul de a memora informatiile despre un fisier.
+ *
+ */
 public class File implements Serializable
 {
 	/**
@@ -9,16 +13,24 @@ public class File implements Serializable
 	 */
 	private static final long serialVersionUID = 1438909121213241739L;
 	
-	public final String filename;
-	private Object lock;		// sincronizarea accesului la fisier
-	public int chunkNo;
+	public final String filename;	// numele fisierului
+	public int chunkNo;				// numarul de segmente de dimensiunea fixa
+									// fisierului
 	
+	/**
+	 * 	Constructor al clasei File
+	 * @param filename	 numele fisierului
+	 */
 	public File( String filename )
 	{	
 		this.filename = filename;
-		this.lock = new Object();
 	}
 	
+	/**
+	 * 	Constructor al clasei File
+	 * @param fileName	numele fisierului
+	 * @param chunkNo	numarul de segmente ale fisierului
+	 */
 	public File(String fileName, int chunkNo)
 	{
 		this(fileName);
@@ -37,8 +49,8 @@ public class File implements Serializable
 	}
 	
 	@Override
-	public String toString() {
-		
+	public String toString()
+	{
 		return filename;
 	}
 }

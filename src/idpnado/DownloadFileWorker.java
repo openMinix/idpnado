@@ -9,12 +9,22 @@ import mediator.Mediator;
 import common.File;
 import common.User;
 
+/**
+ * 	Clasa {@link DownloadFileWorker} are rolul de a efectua descarcarea unui fisier
+ *
+ */
 public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 {
-	File file;
-	User user;
-	Mediator mediator;
+	File file;			// fisierul
+	User user;			// sursa fisierului
+	Mediator mediator;	// mediatorul
 	
+	/**
+	 * 	Constructor al clasei {@link DownloadFileWorker}
+	 * @param file	fisierul care urmeaza sa fie descarcat
+	 * @param user	utilizatorul de la care se face descarcarea
+	 * @param mediator	mediatorul
+	 */
 	public DownloadFileWorker(File file, User user, Mediator mediator)
 	{
 		this.file = file;
@@ -22,12 +32,20 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 		this.mediator = mediator;
 	}
 
+	/**
+	 * 	Metoda doInBackground are rolul de a efectua descarcarea fisierului
+	 */
 	@Override
 	protected Integer doInBackground() throws Exception
 	{	
-		//TODO : if file is empty(chunkNo == 0) => progress bar might not get updated
 		try
 		{
+			if(file.chunkNo == 0)
+			{
+				publish(0);
+				return null;
+			}
+			
 			for(int i = 0; i < file.chunkNo; i++)
 			{
 				Thread.sleep(100);
@@ -38,14 +56,21 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 		{
 			e.printStackTrace();
 		}
+		
 		return null;
 	}
 	
+	/**
+	 * 	Metoda process are rolul de a actualiza starea transferului
+	 */
 	protected void process(List<Integer> chunks)
 	{
-		int progress = ((((chunks.get(0) + 1) * 100) / file.chunkNo));
+		int progress;
 		
-//		System.out.println(progress);
+		if(file.chunkNo == 0)
+			progress = 100;
+		else
+			progress = ((((chunks.get(0) + 1) * 100) / file.chunkNo));
 		
 		setProgress(progress);
 	}

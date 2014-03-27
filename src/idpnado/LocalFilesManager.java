@@ -10,15 +10,26 @@ import mediator.Mediator;
 import common.File;
 import common.User;
 
+/**
+ * 	Clasa {@link LocalFilesManager} are rolul de a memora fisierele
+ * utilizatorului curent
+ *
+ */
 public class LocalFilesManager
 {
-	private Mediator mediator;
-	private User me;
+	private Mediator mediator;	// mediatorul
+	private User me;			// o referinta catre utilizatorul curent
 	
+	/**
+	 * 	Constructor al clasei LocalFilesManager
+	 * @param mediator	o referinta catre mediator
+	 * @param myUserName	numele utilizatorului
+	 */
 	public LocalFilesManager(Mediator mediator, String myUserName)
 	{
 		me = new User(myUserName);
 		
+		// TODO : replace with actual data
 		addFile(new File("myFile1", 100));
 		addFile(new File("myFile2", 200));
 
@@ -27,33 +38,57 @@ public class LocalFilesManager
 		this.mediator.attachLocalFilesManager(this);
 	}
 	
+	/**
+	 * 	Metoda addFile are rolul de a adauga un fisier utilizatorului
+	 * curent
+	 * @param file	fisierul adaugat
+	 */
 	public void addFile(File file)
 	{
 		me.files.add(file);
 	}
 	
+	/**
+	 * 	Metoda deleteFile are rolul de a sterge un fisier
+	 * @param file	fisierul care urmeaza sa fie sters
+	 */
 	public void deleteFile(File file)
 	{
 		me.files.remove(file);
 	}
 	
+	/**
+	 * 	Metoda getFiles are rolul de a intoarce o lista cu
+	 * numele fisierelor
+	 * @return	lista cu nume de fisiere
+	 */
 	public ArrayList<String> getFiles()
 	{
 		ArrayList<String> myFiles = new ArrayList<>();
 		
 		for(File file : me.files)
-		{
 			myFiles.add(file.filename);
-		}
 		
 		return myFiles;
 	}
 	
+	/**
+	 * 	Metoda getMyName are rolul de a intoarce numele utilizatorului
+	 * curent
+	 * @return	numele utilizatorului
+	 */
 	public String getMyName()
 	{
 		return me.name;
 	}
 	
+	/**
+	 * 	Metoda getChunk are rolul de a intoarce un anumit
+	 * segment din fisier
+	 * @param fileName	numele fisierului
+	 * @param chunk	numarul segmentului
+	 * @return	segmentul de date
+	 */
 	public byte[] getChunk(String fileName, int chunk)
 	{
 		int index = me.files.indexOf(new File(fileName));
@@ -69,6 +104,14 @@ public class LocalFilesManager
 		return null;
 	}
 	
+	/**
+	 * 	Metoda uploadFile are rolul de a creea un UploadFileWorker care
+	 * se va ocupa de trimiterea datelor si de a actualizarea starii
+	 * in partea grafica
+	 * @param fileName	numele fisierului
+	 * @param destinationName	numele utilizatorului care descarca fisierul
+	 * @param progressBar	progressBar-ul asociat transferului de fisier
+	 */
 	public void uploadFile(final String fileName, final String destinationName, final JProgressBar progressBar)
 	{
 		int index = me.files.indexOf(new File(fileName));
@@ -84,21 +127,16 @@ public class LocalFilesManager
 			{
 				if(evt.getNewValue().getClass() == Integer.class)
 				{
-//					System.out.println("class : " + evt.getNewValue().getClass());
 					int progress = ((Integer)evt.getNewValue()).intValue();
 					
 					progressBar.setValue(progress);
 					if(progress == 100)
-					{
 						mediator.updateUploadState(destinationName, fileName, TransferState.Completed);
-					}					
+
 					
 					mediator.refreshDownloadTable();
-//					System.out.println("New value : " + evt.getNewValue());					
+					
 				}
-
-				
-
 			}
 		});
 		

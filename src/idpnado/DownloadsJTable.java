@@ -16,7 +16,6 @@ public class DownloadsJTable extends JTable {
 	 */
 	private static final long serialVersionUID = -6713852804203019793L;
 
-//	private ProgressCellRenderer pcr;
 	private ArrayList<ProgressCellRenderer> progressCellRenderers;
 	
 	
@@ -27,9 +26,7 @@ public class DownloadsJTable extends JTable {
 
 	public DownloadsJTable(TableModel dm) {
 		super(dm);
-//		pcr = new ProgressCellRenderer();
-		
-	//	 getColumn("Progress").setCellRenderer(new ProgressCellRenderer());
+
 		progressCellRenderers = new ArrayList<>();
 	}
 	

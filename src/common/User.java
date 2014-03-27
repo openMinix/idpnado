@@ -3,31 +3,49 @@ package common;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class User implements Serializable{
-
-	
+/**
+ * 	Clasa User are rolul de a memora informatiile despre un utilizator
+ *
+ */
+public class User implements Serializable
+{	
 	private static final long serialVersionUID = -3623673008436861895L;
 	
-	public final String name;
-	public ArrayList<File> files;
+	public final String name;		// numele utilizatorului
+	public ArrayList<File> files;	// fisierele utilizatorului
 	
-	public User(String username) {
-	
+	/**
+	 * 	Constructor al clasei User
+	 * @param username	numele utilizatorului
+	 */
+	public User(String username)
+	{
 		this.name = username;
 		files = new ArrayList<>();
 	}
 	
+	/**
+	 * 	Metoda addFile are rolul de a adauga un fisier utilizatorului
+	 * @param file	fisierul care urmeaza sa fie adaugat
+	 */
 	public void addFile(File file)
 	{
 		files.add(file);
 	}
 	
+	/**
+	 * 	Metoda removeFile are rolul de a sterge un fisier
+	 * @param file	fisierul care urmeaza sa fie sters
+	 */
 	public void removeFile(File file)
 	{
 		files.remove(file);
 	}
 	
-	
+	/**
+	 * 	Metoda getFiles are rolul de a intoarce listsa de fisiere ale utilizatorului
+	 * @return	lista de fisiere
+	 */
 	public ArrayList<File> getFiles()
 	{
 		return files;
@@ -44,8 +62,8 @@ public class User implements Serializable{
 	}
 	
 	@Override
-	public String toString() {
-		
+	public String toString()
+	{
 		return name;
 	}
 }

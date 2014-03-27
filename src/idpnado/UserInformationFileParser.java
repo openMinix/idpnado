@@ -6,19 +6,34 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * 	Clasa {@link UserInformationFileParser} are rolul de a 
+ * verifica daca numele utilizatorului exista in fisierul de
+ * configurare.
+ *
+ */
 public class UserInformationFileParser
 {
-	private static final String userInfoFileName = "loginInfo.txt";
+	private static final String userInfoFileName = "loginInfo.txt";	// fisierul de configurare
 	
-	public String ip;
-	public String port;
+	public String ip;	// ip-ul pe care asculta cereri utlizatorul
+	public String port;	// port-ul pe care asculta cereri utlizatorul
 	
+	/**
+	 * 	Constructor al clasei UserInformationFileParser
+	 */
 	public UserInformationFileParser()
 	{
 		this.ip = null;
 		this.port = null;
 	}
 	
+	/**
+	 * 	Metoda checkUserName are rolul de a verifica daca numele utilizatorului
+	 * exista in fisierul de configurare.
+	 * @param userName	numele primit ca parametru de aplicatie
+	 * @return	true daca utilizatorul exista sau false in caz contrar
+	 */
 	public boolean checkUserName(String userName)
 	{
 		File userInfoFile = new File(userInfoFileName);

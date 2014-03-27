@@ -1,6 +1,5 @@
 package mediator;
 
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -11,27 +10,32 @@ import common.User;
 
 public class RandomEventGenerator
 {
-	private static final int numberOfEvents = 100;
-	private static final int timeout = 1000;
-	private int eventCount = 0;
+	private static final int numberOfEvents = 100;	// numarul de evenimente
+	private static final int timeout = 1000;		// intervalul intre 2 evenimente
+	private int eventCount = 0;			// numarul de evenimenete generate
 	private Timer eventTimer;
 	
-	private int addUserChance = 10;
-	private int deleteUserChance = 4;
-	private int addFilesChance = 15;
-	private int delFilesChance = 5;
-	private int downloadFileChance = 3;
+	private int addUserChance = 10;		// sansa adaugarii unui utilizator
+	private int deleteUserChance = 4;	// sansa stergerii unui utilizator
+	private int addFilesChance = 15;	// sansa adaugarii unor fisiere
+	private int delFilesChance = 5;		// sansa stergetii unor fisiere
+	private int downloadFileChance = 3;	// sansa pornirii unui upload
 	
-//	private ArrayList<User> users;
-	private Mediator mediator;
+	private Mediator mediator;			// o referinta la mediator
 	
+	/**
+	 * 	Constructor al clase {@link RandomEventGenerator}
+	 * @param mediator	mediatorul
+	 */
 	public RandomEventGenerator(Mediator mediator)
 	{
 		eventTimer = new Timer();	
-//		users = new ArrayList<>();
 		this.mediator = mediator;
 	}
 	
+	/**
+	 * 	Functia generateEvents are rolul de a genera evenimente aleatoare.
+	 */
 	public void generateEvents()
 	{
 		TimerTask eventGenerator = new TimerTask()
@@ -45,7 +49,6 @@ public class RandomEventGenerator
 					eventTimer.purge();
 				}
 				
-//				User user;
 				int index;
 				int fileNo;
 				Random rand = new Random();
@@ -55,7 +58,7 @@ public class RandomEventGenerator
 				
 				int event = Math.abs(rand.nextInt() % sum);
 				
-//				System.out.println("Event : " + event);
+
 				ArrayList<String> users = mediator.getOnlineUsers();				
 				
 				if(event < addUserChance)
@@ -69,8 +72,7 @@ public class RandomEventGenerator
 					}
 					while(users.contains("user" + userNo));
 						
-					User user = new User("user" + userNo);
-//					users.add(user);						
+					User user = new User("user" + userNo);						
 						
 					mediator.addUser(user.name);
 					return;
