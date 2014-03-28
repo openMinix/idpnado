@@ -1,12 +1,13 @@
 Vlad Barosan, 341C3
 Nicolae Ciobanu, 341C3
-
-TODO : Design high-level?
-TODO : GUI
+					TEMA1
 
 
+Build: ant build
+Executie: ant run ( automat build )
+Clean: ant clean
 Module:
-- GUI					-
+- GUI					- expune interfata cu utilizatorul
 - Mediator				- realizeaza legatura intre module
 - LocalFilesManager		- memoreaza informatii despre fisierele utilizatorului curent
 - OnlineUsersManager	- memoreaza informatii despre utilizatorii conectati
@@ -17,7 +18,15 @@ Pentru memorarea datelor despre utilizatori am folosit 2 module:
 	- un modul care memoreaza informatii despre utilizatorii online.
 Am ales aceasta varianta pentru a putea memora informatii diferite pentru utilizatorul care foloseste aplicatia local fata de restul utilizatorilor. De asemenea, se pot implementa metode diferite de sincronizare, in functie de necesitati.
 
+GUI
+Acest modul realizeaza afisarea interfetei utilizator.
+Acesta va capta actiunile utilizatorului si le va transmite mediatorului pentru a se realiza procesarea. De asemenea, va primi notificari de la mediator pentru a actualiza modelele pe care se bazeaza componentele grafice ce se afiseaza.
+
 In cazul interfetei grafice, singura diferenta intre utilizatorul local si cei remote este faptul ca nu se poate descarca un fisier local. In rest, in ambele cazuri lista de fisiere este obtinuta printr-un apel catre mediator.
+
+Mediator
+Acest modul realizeaza legatura celorlalte componente prin sine.
+La acesta se inregistreaza celalalte componente, uramand ca orice comunicare sa se desfasoare prin intermediul mediatorului.
 
 LocalFilesManager
 Acest modul memoreaza informatii despre fisierele locale. Acesta primeste o cerere de upload a unui fisier si porneste un UploadFileWorker care va servi cererea. De asemenea, in momentul descarcarii unui fisier se va adauga fisierul descarcat la lista memora in cadrul acestui modul.
@@ -32,3 +41,4 @@ Acest modul foloseste un timer pentru a genera evenimente aleatoare. Evenimentel
 - adaugarea de fisiere utilizatorilor
 - stergerea de fisiere ale utilizatorilor remote
 - pornirea unui upload
+

@@ -9,6 +9,11 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
+/**
+ * 
+ * Clasa DownloadsJTable reprezinta componenta
+ * grafica ce va afisa download-urile in desfasurare
+ */
 public class DownloadsJTable extends JTable {
 
 	/**
@@ -31,11 +36,21 @@ public class DownloadsJTable extends JTable {
 	}
 	
 
+	/**
+	 * Constructor
+	 * @param dm
+	 * @param cm
+	 */
 	public DownloadsJTable(TableModel dm, TableColumnModel cm) {
 		super(dm, cm);
 		
 	}
 
+	/**
+	 * Constructor
+	 * @param numRows
+	 * @param numColumns
+	 */
 	public DownloadsJTable(int numRows, int numColumns) {
 		super(numRows, numColumns);
 		
@@ -59,6 +74,9 @@ public class DownloadsJTable extends JTable {
 	
 	
 
+	/**
+	 *  Metoda TableCellRenderer despre cum se deseneaza o celula
+	 */
 	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
 		

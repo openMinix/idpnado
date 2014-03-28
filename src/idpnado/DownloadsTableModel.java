@@ -6,8 +6,8 @@ package idpnado;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * @author vlad
- *
+ * 	Clasa DownloadsTableModel reprezinta modelul componentei
+ *  grafice ce afiseaza download-urile in desfasurare
  */
 public class DownloadsTableModel extends DefaultTableModel {
 
@@ -24,6 +24,9 @@ public class DownloadsTableModel extends DefaultTableModel {
 		
 	}
 	
+	/**
+	 * Metoda isCellEditable determina daca o celula e editabila sau nu
+	 */
 	@Override
 	public boolean isCellEditable(int row, int column) {
 		
