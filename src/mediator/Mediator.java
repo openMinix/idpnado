@@ -4,6 +4,7 @@ import idpnado.LocalFilesManager;
 import idpnado.MainFrame;
 import idpnado.OnlineUsersManager;
 import idpnado.TransferState;
+import idpnado.Transmission;
 
 import java.util.ArrayList;
 
@@ -107,11 +108,12 @@ public class Mediator
 	 * 	Metoda startUpload are rolul de a porni transferul unui fisier local
 	 * @param fileName	numele fisierului
 	 * @param destinationName	numele destinatiei
+	 * @param transmission	obiectul care realizeaza transmisia peste retea
 	 */
-	public void startUpload(String fileName, String destinationName)
+	public void startUpload(String fileName, String destinationName, Transmission transmission)
 	{
 		JProgressBar progressBar = mainFrame.addUploadToDownloadTable(fileName, destinationName);
-		localFilesManager.uploadFile(fileName, destinationName, progressBar);
+		localFilesManager.uploadFile(fileName, destinationName, progressBar, transmission);
 	}
 	
 	/**

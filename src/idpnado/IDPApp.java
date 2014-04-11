@@ -1,9 +1,6 @@
 package idpnado;
 
-import java.awt.EventQueue;
-
 import mediator.Mediator;
-import mediator.RandomEventGenerator;
 
 public class IDPApp {
 
@@ -45,9 +42,6 @@ public class IDPApp {
 				window.frame.setLocation(100, 200);
 
 				mediator.attachMainFrame((MainFrame) window.frame);
-
-				RandomEventGenerator reg = new RandomEventGenerator(mediator);
-				reg.generateEvents();
 
 			}
 			catch (Exception e)

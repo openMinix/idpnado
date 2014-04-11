@@ -112,7 +112,7 @@ public class LocalFilesManager
 	 * @param destinationName	numele utilizatorului care descarca fisierul
 	 * @param progressBar	progressBar-ul asociat transferului de fisier
 	 */
-	public void uploadFile(final String fileName, final String destinationName, final JProgressBar progressBar)
+	public void uploadFile(final String fileName, final String destinationName, final JProgressBar progressBar, Transmission transmission)
 	{
 		int index = me.files.indexOf(new File(fileName));
 		if(index == -1) //TODO : throw exception
@@ -142,6 +142,4 @@ public class LocalFilesManager
 		
 		worker.execute();		
 	}
-	
-
 }
