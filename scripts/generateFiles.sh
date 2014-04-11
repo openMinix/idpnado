@@ -22,5 +22,5 @@ done
 
 for i in $(seq 41 60)
 do
-	${SCRIPT_PATH}/generateRandomFile.sh "user1" $i `expr $i \* 100`
+	${SCRIPT_PATH}/generateRandomFile.sh "user3" $i `expr $i \* 100`
 done

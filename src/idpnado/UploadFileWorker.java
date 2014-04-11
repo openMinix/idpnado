@@ -5,7 +5,6 @@ import java.util.List;
 import javax.swing.SwingWorker;
 
 import mediator.Mediator;
-
 import common.File;
 
 /**
@@ -17,11 +16,21 @@ public class UploadFileWorker extends SwingWorker<Integer, Integer>
 {
 	File file;			// fisierului
 	Mediator mediator;	// mediatorul
+	Transmission transmission;	// obiectul care face transferul
 	
 	public UploadFileWorker(File file, Mediator mediator)
 	{
 		this.file = file;
 		this.mediator = mediator;
+	}
+	
+	/**
+	 * 	Metoda attachTransmission are rolul de a adauga modulul de transmisie
+	 * @param transmission
+	 */
+	public void attachTransmission(Transmission transmission)
+	{
+		this.transmission = transmission;
 	}
 
 	@Override
@@ -40,9 +49,18 @@ public class UploadFileWorker extends SwingWorker<Integer, Integer>
 			}
 			
 			for(int i = 0; i < file.chunkNo; i++)
-			{
-				mediator.getChunk(file.filename, i);
-				Thread.sleep(100);
+			{			
+				byte[] chunk = mediator.getChunk(file.filename, i);
+				if(!transmission.writeBytes(chunk))
+				{
+					throw new Exception();
+				}
+				
+				if(!transmission.getAck())
+				{			
+					throw new Exception();
+				}
+
 				publish(i);
 			}
 		}
@@ -51,6 +69,13 @@ public class UploadFileWorker extends SwingWorker<Integer, Integer>
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	@Override
+	protected void done()
+	{
+		transmission.close();
+		setProgress(100);
 	}
 	
 	/**

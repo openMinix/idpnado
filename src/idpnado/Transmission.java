@@ -191,6 +191,49 @@ public class Transmission
 		return buffer;
 	}	
 	
+	public byte[] getChunk()
+	{
+		ByteBuffer buffer = ByteBuffer.allocate(4);
+		int read = 0;
+		
+		int capacity = buffer.capacity();
+		try
+		{
+			while(capacity > 0)
+			{
+				read = channel.read(buffer);
+				if(read == -1)
+					return null;
+				
+				capacity -= read;
+			}
+			
+			buffer.flip();
+			capacity = buffer.getInt();
+			
+			buffer = ByteBuffer.allocate(capacity);
+			while(capacity > 0)
+			{
+				read = channel.read(buffer);
+				if(read == -1)
+					return null;
+				
+				capacity -= read;
+			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		
+		buffer.flip();
+		byte[] bytes = new byte[buffer.capacity()];
+		buffer.get(bytes);
+		
+		return bytes;
+	}		
+	
 	public void close()
 	{
 		try

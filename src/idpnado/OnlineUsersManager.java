@@ -8,7 +8,6 @@ import java.util.List;
 import javax.swing.JProgressBar;
 
 import mediator.Mediator;
-
 import common.Constants;
 import common.File;
 import common.User;
@@ -143,47 +142,8 @@ public class OnlineUsersManager
 		return users;
 	}
 	
-	/**
-	 * 	Metoda downloadFile are rolul de a porni descarcarea unui fisier prin crearea unui
-	 * DownloadFileWorker.
-	 * @param userName	numele sursei fisierului
-	 * @param fileName	numele fisierului
-	 * @param progressBar	progressBar-ul corespunzator descarcarii fisierului
-	 */
-	public void downloadFile(final String userName, final String fileName, final JProgressBar progressBar)
+	public void prepareFileDownload(final String userName, final String fileName, final DownloadFileWorker worker)
 	{
-		int index = onlineUsers.indexOf(new User(userName));
-		if(index == -1)	//TODO : throw exception
-			return;
-		User user = onlineUsers.get(index);
-		
-		index = user.files.indexOf(new File(fileName));
-		if(index == -1) //TODO : throw exception
-			return;
-		final File file = user.files.get(index);
-			
-		final DownloadFileWorker worker = new DownloadFileWorker(file, user, mediator);
-		worker.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt)
-			{
-				if(evt.getNewValue().getClass() == Integer.class)
-				{
-					int progress = ((Integer)evt.getNewValue()).intValue();
-					
-					progressBar.setValue(progress);
-					if(progress == 100)
-					{
-						mediator.updateDownloadState(userName, fileName, TransferState.Completed);
-						mediator.addFileToLocalFiles(file);
-					}	
-					
-					mediator.refreshDownloadTable();					
-				}
-			}
-		});
-		
 		new Thread(new Runnable()
 		{
 			@Override
@@ -243,11 +203,56 @@ public class OnlineUsersManager
 				}				
 				
 				worker.attachTransmission(transmission);
-				
-				transmission.close();		// TODO : remove
 				worker.execute();
 			}
 		}).start();
-
+		
+	}
+	
+	/**
+	 * 	Metoda downloadFile are rolul de a porni descarcarea unui fisier prin crearea unui
+	 * DownloadFileWorker.
+	 * @param userName	numele sursei fisierului
+	 * @param fileName	numele fisierului
+	 * @param progressBar	progressBar-ul corespunzator descarcarii fisierului
+	 */
+	public void downloadFile(final String userName, final String fileName, final JProgressBar progressBar)
+	{
+		int index = onlineUsers.indexOf(new User(userName));
+		if(index == -1)	//TODO : throw exception
+			return;
+		User user = onlineUsers.get(index);
+		
+		index = user.files.indexOf(new File(fileName));
+		if(index == -1) //TODO : throw exception
+			return;
+		final File file = user.files.get(index);
+		
+		DiskAccess diskAccess = new DiskAccess(mediator.getMyName());
+		diskAccess.removeFile(fileName);
+			
+		final DownloadFileWorker worker = new DownloadFileWorker(file, user, mediator);
+		worker.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt)
+			{
+				if(evt.getNewValue().getClass() == Integer.class)
+				{
+					int progress = ((Integer)evt.getNewValue()).intValue();		
+					
+					progressBar.setValue(progress);
+					if(progress == 100)
+					{
+						mediator.updateDownloadState(userName, fileName, TransferState.Completed);
+						mediator.addFileToLocalFiles(file);
+					}	
+					
+					mediator.refreshDownloadTable();					
+				}
+			}
+		});
+		
+		prepareFileDownload(userName, fileName, worker);
 	}
 }

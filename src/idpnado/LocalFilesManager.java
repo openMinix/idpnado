@@ -2,6 +2,9 @@ package idpnado;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
@@ -109,9 +112,61 @@ public class LocalFilesManager
 		if(chunk >= file.chunkNo)
 			return null;
 		
-		//TODO : get actual chunk
+		DiskAccess diskAcces = new DiskAccess(me.name);
+		RandomAccessFile raf = null;
+		
+		try
+		{
+			java.io.File openedFile = diskAcces.open(fileName);
+			if(openedFile == null || !openedFile.isFile())
+				return null;
+			
+			raf = new RandomAccessFile(openedFile, "r");
+			
+			long fileSize = raf.length();
+			fileSize -= chunk * Constants.chunkSize;
+			
+			if(fileSize < 0)
+			{
+				raf.close();
+				return null;
+			}
+			
+			int size = 0;
+			
+			if(fileSize > Constants.chunkSize)
+				size = (int) Constants.chunkSize;
+			else
+				size = (int) fileSize;
+			
+			raf.seek(chunk * Constants.chunkSize);
+
+			byte[] content = new byte[size];
+			raf.readFully(content);
+			raf.close();
+			
+			return content;
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			System.err.println("Accesing inexistent file");
+			
+			try
+			{
+				raf.close();
+			}
+			catch(IOException e2)
+			{
+				
+			}
+		}
+		
 		return null;
 	}
+	
+
+	
 	
 	/**
 	 * 	Metoda uploadFile are rolul de a creea un UploadFileWorker care
@@ -128,10 +183,9 @@ public class LocalFilesManager
 			return;
 		final File file = me.files.get(index);
 		
-		transmission.close(); 	// TODO : obviously, remove :)
-		
-			
 		UploadFileWorker worker = new UploadFileWorker(file, mediator);
+		worker.attachTransmission(transmission);
+		
 		worker.addPropertyChangeListener(new PropertyChangeListener()
 		{	
 			@Override
@@ -143,7 +197,9 @@ public class LocalFilesManager
 					
 					progressBar.setValue(progress);
 					if(progress == 100)
+					{
 						mediator.updateUploadState(destinationName, fileName, TransferState.Completed);
+					}
 
 					
 					mediator.refreshDownloadTable();

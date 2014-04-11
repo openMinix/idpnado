@@ -2,6 +2,8 @@ package idpnado;
 
 import java.io.File;
 
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 public class DiskAccess
 {
 	String userName;
@@ -29,5 +31,17 @@ public class DiskAccess
 			return -1;
 		
 		return file.length();		
+	}
+	
+	public void removeFile(String fileName)
+	{
+		File file = new File(root, fileName);
+		if(file.isFile())
+			file.delete();
+	}
+	
+	public File open(String fileName)
+	{
+		return new File(root, fileName);
 	}
 }
