@@ -242,7 +242,7 @@ public class OnlineUsersManager
 				transmission.close();		// TODO : remove
 				worker.execute();
 			}
-		});
+		}).start();
 
 	}
 }

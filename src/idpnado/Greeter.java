@@ -58,6 +58,7 @@ public class Greeter
 					return;
 				}						
 					
+				buffer.flip();
 				byte[] bytes = new byte[buffer.capacity()];
 				buffer.get(bytes);
 										
@@ -76,6 +77,7 @@ public class Greeter
 					return;
 				}					
 				
+				buffer.flip();				
 				bytes = new byte[buffer.capacity()];
 				buffer.get(bytes);
 										
