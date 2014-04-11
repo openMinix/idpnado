@@ -29,10 +29,15 @@ public class LocalFilesManager
 	{
 		me = new User(myUserName);
 		
-		// TODO : replace with actual data
-		addFile(new File("myFile1", 100));
-		addFile(new File("myFile2", 200));
-
+		DiskAccess diskAccess = new DiskAccess(myUserName);
+		String[] myFiles = diskAccess.getFiles();
+		
+		for(String str : myFiles)
+		{
+			File file = new File(str, 100);		//TODO : get actual size
+			me.addFile(file);
+		}
+		
 		this.mediator = mediator;
 		
 		this.mediator.attachLocalFilesManager(this);
@@ -118,6 +123,9 @@ public class LocalFilesManager
 		if(index == -1) //TODO : throw exception
 			return;
 		final File file = me.files.get(index);
+		
+		transmission.close(); 	// TODO : obviously, remove :)
+		
 			
 		UploadFileWorker worker = new UploadFileWorker(file, mediator);
 		worker.addPropertyChangeListener(new PropertyChangeListener()

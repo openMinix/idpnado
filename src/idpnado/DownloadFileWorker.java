@@ -18,6 +18,7 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 	File file;			// fisierul
 	User user;			// sursa fisierului
 	Mediator mediator;	// mediatorul
+	Transmission trasmission;	// modulul de transmisie
 	
 	/**
 	 * 	Constructor al clasei {@link DownloadFileWorker}
@@ -30,6 +31,15 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 		this.file = file;
 		this.user = user;
 		this.mediator = mediator;
+	}
+	
+	/**
+	 * 	Metoda attachTransmission are rolul de a adauga modulul de transmisie
+	 * @param transmission
+	 */
+	public void attachTransmission(Transmission transmission)
+	{
+		this.trasmission = transmission;
 	}
 
 	/**

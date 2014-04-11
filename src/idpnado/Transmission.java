@@ -139,6 +139,19 @@ public class Transmission
 		return buffer;
 	}
 	
+	public boolean getAck()
+	{
+		ByteBuffer buffer = getMessage(4);
+		if(buffer == null)
+			return false;
+		
+		buffer.flip();
+		if(buffer.getInt() == Constants.ack)
+			return true;
+		
+		return false;
+	}
+	
 	public ByteBuffer getMessage()
 	{
 		ByteBuffer buffer = ByteBuffer.allocate(4);

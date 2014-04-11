@@ -25,12 +25,21 @@ public class IDPApp {
 
 		String ip = uifp.ip;
 		String port = uifp.port;
+		int portNo = uifp.portNo;
+		
 
 //		EventQueue.invokeLater(new Runnable() {
 //			public void run() {
 			try
 			{
 				Mediator mediator = new Mediator();
+				
+				if(!(new Server(mediator, ip, portNo).create()))
+				{
+					System.err.println("Unable to start server");
+					System.exit(-1);
+				}
+				
 				new LocalFilesManager(mediator, userName);
 				new OnlineUsersManager(mediator);
 					
@@ -42,6 +51,13 @@ public class IDPApp {
 				window.frame.setLocation(100, 200);
 
 				mediator.attachMainFrame((MainFrame) window.frame);
+				
+
+				for(String user : mediator.getOnlineUsers())
+				{
+					((MainFrame) window.frame).addUser(user);
+				}
+					
 
 			}
 			catch (Exception e)

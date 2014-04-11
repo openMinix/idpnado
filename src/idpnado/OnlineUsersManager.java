@@ -3,12 +3,15 @@ package idpnado;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JProgressBar;
 
 import mediator.Mediator;
-import common.User;
+
+import common.Constants;
 import common.File;
+import common.User;
 
 /**
  * 	Clasa {@link OnlineUsersManager} are rolul de a memora informatii
@@ -28,6 +31,22 @@ public class OnlineUsersManager
 	{
 		this.mediator = mediator;
 		onlineUsers = new ArrayList<>();
+		
+		List<String> users = new UserInformationFileParser().getUsers(mediator.getMyName());
+		for(String auxUser : users)
+		{
+			User user = new User(auxUser);
+			
+			String[] files = new DiskAccess(auxUser).getFiles();
+		
+			for(int i = 0; i < files.length; i++)
+			{
+				File file = new File(files[i], 100);	// TODO : get actual number of chunks
+				user.addFile(file);
+			}
+			
+			onlineUsers.add(user);
+		}
 		
 		this.mediator.attachOnlineUsersManager(this);
 	}
@@ -138,7 +157,7 @@ public class OnlineUsersManager
 			return;
 		final File file = user.files.get(index);
 			
-		DownloadFileWorker worker = new DownloadFileWorker(file, user, mediator);
+		final DownloadFileWorker worker = new DownloadFileWorker(file, user, mediator);
 		worker.addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
@@ -160,6 +179,70 @@ public class OnlineUsersManager
 			}
 		});
 		
-		worker.execute();
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				UserInformationFileParser uifp = new UserInformationFileParser();
+				if(!uifp.checkUserName(userName))
+				{
+					System.err.println("User doesn't exist!");
+					return;
+				}
+				
+				String ip = uifp.ip;
+				int portNo = uifp.portNo;
+				
+				Transmission transmission = new Transmission(ip, portNo, mediator.getMyName());
+				if(!transmission.open())
+				{
+					System.err.println("Unable to open socket");
+					return;
+				}
+				
+				if(!transmission.writeInterest(Constants.fileTransferInterest))
+				{
+					System.err.println("Unable to write interest!");
+					return;
+				}
+				
+				if(!transmission.getAck())
+				{
+					System.err.println("Didn't get ack");
+					return;
+				}
+				
+				if(!transmission.writeString(fileName))
+				{
+					System.err.println("Unable to write the file name");
+					return;
+				}
+				
+				if(!transmission.getAck())
+				{
+					System.err.println("Didn't get ack");
+					return;
+				}
+				
+				if(!transmission.writeString(mediator.getMyName()))
+				{
+					System.err.println("Unable to write my name");
+					return;
+				}
+				
+				if(!transmission.getAck())
+				{
+					System.err.println("Didn't get ack");
+					return;
+				}				
+				
+				worker.attachTransmission(transmission);
+				
+				transmission.close();		// TODO : remove
+				worker.execute();
+			}
+		});
+
 	}
 }

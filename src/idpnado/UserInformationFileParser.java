@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 	Clasa {@link UserInformationFileParser} are rolul de a 
@@ -18,6 +20,7 @@ public class UserInformationFileParser
 	
 	public String ip;	// ip-ul pe care asculta cereri utlizatorul
 	public String port;	// port-ul pe care asculta cereri utlizatorul
+	public int portNo;	// port-ul pe care asculta cereri utlizatorul
 	
 	/**
 	 * 	Constructor al clasei UserInformationFileParser
@@ -64,7 +67,67 @@ public class UserInformationFileParser
 					ip = tokens[1];
 					port = tokens[2];
 					reader.close();
+					
+					portNo = Integer.parseInt(port);
+					if(portNo < 0)
+						throw new NumberFormatException();
 					return true;
+				}
+			}
+			catch(IOException e)
+			{
+				System.err.println("Cannot read from user information file");
+				break;
+			}
+			catch(NumberFormatException e)
+			{
+				System.err.println("Port is not a positive integer");
+				break;
+			}
+		}
+		
+		try
+		{
+			reader.close();
+		}
+		catch(IOException e)
+		{
+			
+		}
+		
+		return false;
+	}
+	
+	public List<String> getUsers(String myName)
+	{
+		ArrayList<String> users = new ArrayList<>();
+		
+		File userInfoFile = new File(userInfoFileName);
+		BufferedReader reader = null;
+		
+		try
+		{
+			reader = new BufferedReader(new FileReader(userInfoFile));
+		}
+		catch(FileNotFoundException e)
+		{
+			System.err.println("User information file doesn't exist");
+			return null;
+		}
+		
+		while(true)
+		{
+			try
+			{
+				String line = reader.readLine();
+				if(line == null)
+					break;
+				
+				String[] tokens = line.split("\t");
+				
+				if(tokens.length == 3 && !tokens[0].equals(myName))
+				{
+					users.add(tokens[0]);
 				}
 			}
 			catch(IOException e)
@@ -83,6 +146,6 @@ public class UserInformationFileParser
 			
 		}
 		
-		return false;
+		return users;
 	}
 }
