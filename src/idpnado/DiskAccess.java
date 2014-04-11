@@ -21,4 +21,13 @@ public class DiskAccess
 	{
 		return root.list();
 	}
+	
+	public long getFileSize(String fileName)
+	{
+		File file = new File(root, fileName);
+		if(!file.isFile())
+			return -1;
+		
+		return file.length();		
+	}
 }

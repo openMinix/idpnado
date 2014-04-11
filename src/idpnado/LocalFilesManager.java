@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.JProgressBar;
 
 import mediator.Mediator;
+import common.Constants;
 import common.File;
 import common.User;
 
@@ -34,7 +35,10 @@ public class LocalFilesManager
 		
 		for(String str : myFiles)
 		{
-			File file = new File(str, 100);		//TODO : get actual size
+			long size = diskAccess.getFileSize(str);
+			long chunkNo = size / Constants.chunkSize;
+						
+			File file = new File(str, chunkNo);
 			me.addFile(file);
 		}
 		

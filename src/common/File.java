@@ -14,7 +14,7 @@ public class File implements Serializable
 	private static final long serialVersionUID = 1438909121213241739L;
 	
 	public final String filename;	// numele fisierului
-	public int chunkNo;				// numarul de segmente de dimensiunea fixa
+	public long chunkNo;			// numarul de segmente de dimensiunea fixa
 									// fisierului
 	
 	/**
@@ -31,7 +31,7 @@ public class File implements Serializable
 	 * @param fileName	numele fisierului
 	 * @param chunkNo	numarul de segmente ale fisierului
 	 */
-	public File(String fileName, int chunkNo)
+	public File(String fileName, long chunkNo)
 	{
 		this(fileName);
 		

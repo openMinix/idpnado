@@ -33,15 +33,20 @@ public class OnlineUsersManager
 		onlineUsers = new ArrayList<>();
 		
 		List<String> users = new UserInformationFileParser().getUsers(mediator.getMyName());
+		
 		for(String auxUser : users)
 		{
 			User user = new User(auxUser);
 			
-			String[] files = new DiskAccess(auxUser).getFiles();
+			DiskAccess diskAccess = new DiskAccess(auxUser);
+			String[] files = diskAccess.getFiles();
 		
 			for(int i = 0; i < files.length; i++)
 			{
-				File file = new File(files[i], 100);	// TODO : get actual number of chunks
+				long size = diskAccess.getFileSize(files[i]);
+				long chunkNo = size / Constants.chunkSize;
+				
+				File file = new File(files[i], chunkNo);
 				user.addFile(file);
 			}
 			

@@ -80,7 +80,7 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 		if(file.chunkNo == 0)
 			progress = 100;
 		else
-			progress = ((((chunks.get(0) + 1) * 100) / file.chunkNo));
+			progress = (int) ((((chunks.get(0) + 1) * 100) / file.chunkNo));
 		
 		setProgress(progress);
 	}
