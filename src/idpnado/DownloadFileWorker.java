@@ -25,6 +25,8 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 	java.io.File diskFile;
 	RandomAccessFile raf;
 	
+	boolean gotException = false;
+	
 	/**
 	 * 	Constructor al clasei {@link DownloadFileWorker}
 	 * @param file	fisierul care urmeaza sa fie descarcat
@@ -94,6 +96,9 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 		{
 			if(file.chunkNo == 0)
 			{
+				if(!diskFile.isFile())
+					diskFile.createNewFile();
+				
 				publish(0);
 				return null;
 			}
@@ -104,11 +109,13 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 				byte[] chunk = trasmission.getChunk();
 				if(chunk == null)
 				{			
+					gotException = true;
 					throw new Exception();
 				}
 				
 				if(!trasmission.writeAck())
 				{			
+					gotException = true;					
 					throw new Exception();
 				}
 				
@@ -118,7 +125,8 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			gotException = true;
+			System.err.println("Unable to continue download");	// TODO : log
 		}
 		
 		return null;
@@ -127,8 +135,13 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 	@Override
 	protected void done()
 	{
+		if(gotException)
+			setProgress(0);
+		else
+			setProgress(100);
+		
 		trasmission.close();
-		setProgress(100);
+		
 	}	
 	
 	/**

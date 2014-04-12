@@ -239,14 +239,21 @@ public class OnlineUsersManager
 			{
 				if(evt.getNewValue().getClass() == Integer.class)
 				{
-					int progress = ((Integer)evt.getNewValue()).intValue();		
+					int progress = ((Integer)evt.getNewValue()).intValue();
 					
-					progressBar.setValue(progress);
-					if(progress == 100)
+					if(progress == 0 && worker.gotException)
 					{
-						mediator.updateDownloadState(userName, fileName, TransferState.Completed);
-						mediator.addFileToLocalFiles(file);
-					}	
+						mediator.updateDownloadState(userName, fileName, TransferState.Stopped);
+					}
+					else
+					{
+						progressBar.setValue(progress);
+						if(progress == 100)
+						{
+							mediator.updateDownloadState(userName, fileName, TransferState.Completed);
+							mediator.addFileToLocalFiles(file);
+						}
+					}
 					
 					mediator.refreshDownloadTable();					
 				}

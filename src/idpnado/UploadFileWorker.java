@@ -18,6 +18,8 @@ public class UploadFileWorker extends SwingWorker<Integer, Integer>
 	Mediator mediator;	// mediatorul
 	Transmission transmission;	// obiectul care face transferul
 	
+	boolean gotException = false;
+	
 	public UploadFileWorker(File file, Mediator mediator)
 	{
 		this.file = file;
@@ -53,11 +55,13 @@ public class UploadFileWorker extends SwingWorker<Integer, Integer>
 				byte[] chunk = mediator.getChunk(file.filename, i);
 				if(!transmission.writeBytes(chunk))
 				{
+					gotException = true;					
 					throw new Exception();
 				}
 				
 				if(!transmission.getAck())
 				{			
+					gotException = true;						
 					throw new Exception();
 				}
 
@@ -66,7 +70,8 @@ public class UploadFileWorker extends SwingWorker<Integer, Integer>
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			gotException = true;
+			System.err.println("Unable to continue upload");	// TODO : log
 		}
 		return null;
 	}
@@ -74,8 +79,12 @@ public class UploadFileWorker extends SwingWorker<Integer, Integer>
 	@Override
 	protected void done()
 	{
+		if(gotException)
+			setProgress(0);
+		else
+			setProgress(100);
+		
 		transmission.close();
-		setProgress(100);
 	}
 	
 	/**

@@ -183,7 +183,7 @@ public class LocalFilesManager
 			return;
 		final File file = me.files.get(index);
 		
-		UploadFileWorker worker = new UploadFileWorker(file, mediator);
+		final UploadFileWorker worker = new UploadFileWorker(file, mediator);
 		worker.attachTransmission(transmission);
 		
 		worker.addPropertyChangeListener(new PropertyChangeListener()
@@ -195,10 +195,17 @@ public class LocalFilesManager
 				{
 					int progress = ((Integer)evt.getNewValue()).intValue();
 					
-					progressBar.setValue(progress);
-					if(progress == 100)
+					if(progress == 0 && worker.gotException)
 					{
-						mediator.updateUploadState(destinationName, fileName, TransferState.Completed);
+						mediator.updateUploadState(destinationName, fileName, TransferState.Stopped);
+					}
+					else
+					{
+						progressBar.setValue(progress);
+						if(progress == 100)
+						{
+							mediator.updateUploadState(destinationName, fileName, TransferState.Completed);
+						}
 					}
 
 					
