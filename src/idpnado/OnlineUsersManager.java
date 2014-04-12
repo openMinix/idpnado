@@ -2,12 +2,14 @@ package idpnado;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JProgressBar;
 
 import mediator.Mediator;
+
 import common.Constants;
 import common.File;
 import common.User;
@@ -42,10 +44,7 @@ public class OnlineUsersManager
 		
 			for(int i = 0; i < files.length; i++)
 			{
-				long size = diskAccess.getFileSize(files[i]);
-				long chunkNo = size / Constants.chunkSize;
-				
-				File file = new File(files[i], chunkNo);
+				File file = new File(files[i]);
 				user.addFile(file);
 			}
 			
@@ -200,8 +199,26 @@ public class OnlineUsersManager
 				{
 					System.err.println("Didn't get ack");
 					return;
-				}				
+				}	
 				
+				ByteBuffer buffer = transmission.getMessage(4);
+				if(buffer == null)
+				{
+					System.err.println("Didn't get file size");
+					return;
+				}
+				
+				if(!transmission.writeAck())
+				{
+					System.err.println("Unable to write ack");
+					return;
+				}
+				
+				buffer.flip();
+				
+				int chunkNo = buffer.getInt();
+				
+				worker.file.chunkNo = chunkNo;
 				worker.attachTransmission(transmission);
 				worker.execute();
 			}

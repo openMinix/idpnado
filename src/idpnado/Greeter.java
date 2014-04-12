@@ -81,7 +81,7 @@ public class Greeter
 				bytes = new byte[buffer.capacity()];
 				buffer.get(bytes);
 										
-				String destinationName = new String(bytes);					
+				String destinationName = new String(bytes);
 				
 				mediator.startUpload(fileName, destinationName, transmission);				
 			}

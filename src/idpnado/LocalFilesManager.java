@@ -2,14 +2,15 @@ package idpnado;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
 
 import mediator.Mediator;
+
 import common.Constants;
 import common.File;
 import common.User;
@@ -165,6 +166,34 @@ public class LocalFilesManager
 		return null;
 	}
 	
+	public void prepareFileUpload(final Transmission transmission, final File file, final UploadFileWorker worker)
+	{
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				ByteBuffer buffer = ByteBuffer.allocate(4);
+				buffer.clear();
+				
+				buffer.putInt((int) file.chunkNo);
+				
+				if(!transmission.writeMessage(buffer))
+				{
+					System.err.println("Unable to write file size");
+					return;
+				}
+				
+				if(!transmission.getAck())
+				{
+					System.err.println("Didn't receive ack");
+					return;
+				}
+				
+				worker.execute();
+			}
+		}).start();
+	}
 
 	
 	
@@ -215,6 +244,6 @@ public class LocalFilesManager
 			}
 		});
 		
-		worker.execute();		
+		prepareFileUpload(transmission, file, worker);
 	}
 }

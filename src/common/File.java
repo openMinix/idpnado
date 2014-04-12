@@ -24,6 +24,7 @@ public class File implements Serializable
 	public File( String filename )
 	{	
 		this.filename = filename;
+		this.chunkNo = -1;
 	}
 	
 	/**
