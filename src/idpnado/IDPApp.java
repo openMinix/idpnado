@@ -82,6 +82,9 @@ public class IDPApp {
 
 	}
 
+	public IDPApp() {
+		// TODO Auto-generated constructor stub
+	}
 	/**
 	 * Create the application.
 	 */

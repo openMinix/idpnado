@@ -18,7 +18,7 @@ public class IDPAppTest {
 	@Test
 	public void testInitialize() {
 		
-		IDPApp app = new IDPApp(new Mediator());
+		IDPApp app = new IDPApp();
 		assertNotNull(app);
 		
 	}
