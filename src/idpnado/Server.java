@@ -6,6 +6,9 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
+
 import mediator.Mediator;
 
 public class Server
@@ -15,6 +18,8 @@ public class Server
 	
 	String IP = null;
 	int port = -1;
+	
+	Logger logger = Logger.getLogger(Server.class);
 	
 	boolean mustExit = false;
 	
@@ -27,6 +32,7 @@ public class Server
 	
 	public boolean create()
 	{
+		logger.info("Creating server");
 		try
 		{
 			serverSocketChannel = ServerSocketChannel.open();
@@ -48,12 +54,13 @@ public class Server
 						}
 						catch(ClosedChannelException e)
 						{
-							//TODO log;
+							logger.error("Error ClosedChannelException");
 							mustExit = true;
 						}
 						catch(IOException e)
 						{
-							e.printStackTrace(); //TODO : log
+							logger.error("Error IOException on creating server");
+							e.printStackTrace(); 
 							mustExit = true;
 						}
 					}
@@ -63,7 +70,7 @@ public class Server
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace(); // TODO : log
+			logger.error("Error on IOException");
 			return false;
 		}
 		

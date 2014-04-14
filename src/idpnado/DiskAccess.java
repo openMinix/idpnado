@@ -4,11 +4,15 @@ import java.io.File;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import org.apache.log4j.Logger;
+
 public class DiskAccess
 {
 	String userName;
 	
 	File root;
+	
+	Logger logger = Logger.getLogger(DiskAccess.class);
 	
 	public DiskAccess(String userName)
 	{
@@ -21,11 +25,13 @@ public class DiskAccess
 	
 	public String[] getFiles()
 	{
+		logger.debug("Getting files");
 		return root.list();
 	}
 	
 	public long getFileSize(String fileName)
 	{
+		logger.debug("Getting file size for " + fileName);
 		File file = new File(root, fileName);
 		if(!file.isFile())
 			return -1;
@@ -35,6 +41,7 @@ public class DiskAccess
 	
 	public void removeFile(String fileName)
 	{
+		logger.debug("Removing file " + fileName);
 		File file = new File(root, fileName);
 		if(file.isFile())
 			file.delete();
@@ -42,6 +49,7 @@ public class DiskAccess
 	
 	public File open(String fileName)
 	{
+		logger.debug("Opening file " + fileName);
 		return new File(root, fileName);
 	}
 }

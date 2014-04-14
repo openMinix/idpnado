@@ -5,6 +5,8 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
+import org.apache.log4j.Logger;
+
 import common.Constants;
 
 public class Transmission
@@ -17,6 +19,7 @@ public class Transmission
 	
 	boolean isOpened = false;
 	
+	static Logger logger = Logger.getLogger(Transmission.class);
 	public Transmission(SocketChannel channel)
 	{
 		this.channel = channel;
@@ -33,6 +36,7 @@ public class Transmission
 	
 	public boolean open()
 	{
+		logger.debug("Channel is opening");
 		if(isOpened)
 			return true;
 		
@@ -46,6 +50,7 @@ public class Transmission
 		}
 		catch(IOException e)
 		{
+			logger.error("Error on channel connection");
 			e.printStackTrace();
 			return false;
 		}
@@ -57,6 +62,7 @@ public class Transmission
 	{
 		int written = 0; 
 		
+		logger.debug("Writing " + buffer.toString() );
 		buffer.flip();
 		int capacity = buffer.capacity();
 		
@@ -73,6 +79,7 @@ public class Transmission
 		}
 		catch(IOException e)
 		{
+			logger.error("Error on writing " + buffer.toString());
 			e.printStackTrace();
 		}
 		
@@ -92,6 +99,7 @@ public class Transmission
 	
 	public boolean writeAck()
 	{
+		logger.debug("Writing ack");
 		ByteBuffer buffer = ByteBuffer.allocate(4);
 		buffer.putInt(Constants.ack);
 		
@@ -115,6 +123,7 @@ public class Transmission
 	
 	public ByteBuffer getMessage(int size)
 	{
+		logger.debug("Receiving message of size " + size);
 		ByteBuffer buffer = ByteBuffer.allocate(size);
 		buffer.clear();
 		int read = 0;
@@ -154,6 +163,7 @@ public class Transmission
 	
 	public ByteBuffer getMessage()
 	{
+		logger.info("Getting message");
 		ByteBuffer buffer = ByteBuffer.allocate(4);
 		int read = 0;
 		
@@ -236,12 +246,14 @@ public class Transmission
 	
 	public void close()
 	{
+		logger.debug("Closing channel");
 		try
 		{
 			channel.close();
 		}
 		catch(IOException e)
 		{
+			logger.error("Error on close of channel");
 			e.printStackTrace();
 		}
 	}

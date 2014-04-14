@@ -8,10 +8,12 @@ import java.util.List;
 
 import javax.swing.JProgressBar;
 
+import org.apache.log4j.Logger;
+
 import mediator.Mediator;
 
 import common.Constants;
-import common.File;
+import common.FileInfo;
 import common.User;
 
 /**
@@ -23,7 +25,8 @@ public class OnlineUsersManager
 {
 	private ArrayList<User> onlineUsers;	// lista de utilizatori logati
 	private Mediator mediator;				// mediatorul
-	
+
+	Logger logger = Logger.getLogger(OnlineUsersManager.class);
 	/**
 	 * 	Constructor al clasei OnlineUsersManager
 	 * @param mediator	mediatorul
@@ -44,7 +47,7 @@ public class OnlineUsersManager
 		
 			for(int i = 0; i < files.length; i++)
 			{
-				File file = new File(files[i]);
+				FileInfo file = new FileInfo(files[i]);
 				user.addFile(file);
 			}
 			
@@ -60,6 +63,7 @@ public class OnlineUsersManager
 	 */
 	public void addUser(String userName)
 	{
+		logger.debug("Adding user");
 		onlineUsers.add(new User(userName));
 	}
 	
@@ -69,6 +73,7 @@ public class OnlineUsersManager
 	 */
 	public void removeUser(String userName)
 	{
+		logger.debug("Removing user");
 		onlineUsers.remove(new User(userName));
 	}
 	
@@ -77,8 +82,10 @@ public class OnlineUsersManager
 	 * @param userName	numele utilizatorului
 	 * @param file	fisierul care urmeaza sa fie adaugat
 	 */
-	public void addFile(String userName, File file)
+	public void addFile(String userName, FileInfo file)
 	{
+		logger.debug("Adding file for " + userName + " file " + file.toString() );
+
 		int index = onlineUsers.indexOf(new User(userName));
 		if(index == -1)
 			return;
@@ -93,11 +100,12 @@ public class OnlineUsersManager
 	 */
 	public void removeFile(String userName, String fileName)
 	{
+		logger.debug("Removing file from " + userName + " file " + fileName);
 		int index = onlineUsers.indexOf(new User(userName));
 		if(index == -1)
 			return;
 		
-		onlineUsers.get(index).removeFile(new File(fileName));
+		onlineUsers.get(index).removeFile(new FileInfo(fileName));
 	}
 	
 	/**
@@ -114,7 +122,7 @@ public class OnlineUsersManager
 		{
 			if(userName.equals(user.name))
 			{
-				for(File file : user.files)
+				for(FileInfo file : user.files)
 					fileList.add(file.filename);
 				
 				return fileList;
@@ -240,10 +248,10 @@ public class OnlineUsersManager
 			return;
 		User user = onlineUsers.get(index);
 		
-		index = user.files.indexOf(new File(fileName));
+		index = user.files.indexOf(new FileInfo(fileName));
 		if(index == -1) //TODO : throw exception
 			return;
-		final File file = user.files.get(index);
+		final FileInfo file = user.files.get(index);
 		
 		DiskAccess diskAccess = new DiskAccess(mediator.getMyName());
 		diskAccess.removeFile(fileName);

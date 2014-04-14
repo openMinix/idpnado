@@ -9,10 +9,12 @@ import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
 
+import org.apache.log4j.Logger;
+
 import mediator.Mediator;
 
 import common.Constants;
-import common.File;
+import common.FileInfo;
 import common.User;
 
 /**
@@ -24,6 +26,8 @@ public class LocalFilesManager
 {
 	private Mediator mediator;	// mediatorul
 	private User me;			// o referinta catre utilizatorul curent
+	
+	private Logger logger = Logger.getLogger(LocalFilesManager.class);
 	
 	/**
 	 * 	Constructor al clasei LocalFilesManager
@@ -42,7 +46,7 @@ public class LocalFilesManager
 			long size = diskAccess.getFileSize(str);
 			long chunkNo = size / Constants.chunkSize;
 						
-			File file = new File(str, chunkNo);
+			FileInfo file = new FileInfo(str, chunkNo);
 			me.addFile(file);
 		}
 		
@@ -51,12 +55,15 @@ public class LocalFilesManager
 		this.mediator.attachLocalFilesManager(this);
 	}
 	
+	public LocalFilesManager() {
+		// TODO Auto-generated constructor stub
+	}
 	/**
 	 * 	Metoda addFile are rolul de a adauga un fisier utilizatorului
 	 * curent
 	 * @param file	fisierul adaugat
 	 */
-	public void addFile(File file)
+	public void addFile(FileInfo file)
 	{
 		me.files.add(file);
 	}
@@ -65,7 +72,7 @@ public class LocalFilesManager
 	 * 	Metoda deleteFile are rolul de a sterge un fisier
 	 * @param file	fisierul care urmeaza sa fie sters
 	 */
-	public void deleteFile(File file)
+	public void deleteFile(FileInfo file)
 	{
 		me.files.remove(file);
 	}
@@ -79,7 +86,7 @@ public class LocalFilesManager
 	{
 		ArrayList<String> myFiles = new ArrayList<>();
 		
-		for(File file : me.files)
+		for(FileInfo file : me.files)
 			myFiles.add(file.filename);
 		
 		return myFiles;
@@ -104,11 +111,11 @@ public class LocalFilesManager
 	 */
 	public byte[] getChunk(String fileName, int chunk)
 	{
-		int index = me.files.indexOf(new File(fileName));
+		int index = me.files.indexOf(new FileInfo(fileName));
 		if(index == -1)
 			return null;
 		
-		File file = me.files.get(index);
+		FileInfo file = me.files.get(index);
 		
 		if(chunk >= file.chunkNo)
 			return null;
@@ -166,8 +173,10 @@ public class LocalFilesManager
 		return null;
 	}
 	
-	public void prepareFileUpload(final Transmission transmission, final File file, final UploadFileWorker worker)
+	public void prepareFileUpload(final Transmission transmission, final FileInfo file, final UploadFileWorker worker)
 	{
+		logger.debug("Preparing file upload for " + file.toString() );
+		
 		new Thread(new Runnable()
 		{
 			@Override
@@ -207,10 +216,12 @@ public class LocalFilesManager
 	 */
 	public void uploadFile(final String fileName, final String destinationName, final JProgressBar progressBar, Transmission transmission)
 	{
-		int index = me.files.indexOf(new File(fileName));
+		logger.debug("Uploading file");
+		
+		int index = me.files.indexOf(new FileInfo(fileName));
 		if(index == -1) //TODO : throw exception
 			return;
-		final File file = me.files.get(index);
+		final FileInfo file = me.files.get(index);
 		
 		final UploadFileWorker worker = new UploadFileWorker(file, mediator);
 		worker.attachTransmission(transmission);

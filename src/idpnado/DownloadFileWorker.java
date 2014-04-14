@@ -6,9 +6,11 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import org.apache.log4j.Logger;
+
 import mediator.Mediator;
 import common.Constants;
-import common.File;
+import common.FileInfo;
 import common.User;
 
 /**
@@ -17,7 +19,7 @@ import common.User;
  */
 public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 {
-	File file;			// fisierul
+	FileInfo file;			// fisierul
 	User user;			// sursa fisierului
 	Mediator mediator;	// mediatorul
 	Transmission trasmission;	// modulul de transmisie
@@ -27,14 +29,17 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 	
 	boolean gotException = false;
 	
+	Logger logger = Logger.getLogger(DownloadFileWorker.class);
+	
 	/**
 	 * 	Constructor al clasei {@link DownloadFileWorker}
 	 * @param file	fisierul care urmeaza sa fie descarcat
 	 * @param user	utilizatorul de la care se face descarcarea
 	 * @param mediator	mediatorul
 	 */
-	public DownloadFileWorker(File file, User user, Mediator mediator)
+	public DownloadFileWorker(FileInfo file, User user, Mediator mediator)
 	{
+		logger.debug("Creating download worker for " + file.toString() + " for " + user.toString());
 		this.file = file;
 		this.user = user;
 		this.mediator = mediator;
@@ -126,7 +131,7 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 		catch(Exception e)
 		{
 			gotException = true;
-			System.err.println("Unable to continue download");	// TODO : log
+			logger.error("Cannot continue to download");
 		}
 		
 		return null;

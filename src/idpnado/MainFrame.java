@@ -1,13 +1,11 @@
 package idpnado;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -19,8 +17,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import mediator.Mediator;
-import common.File;
-import common.User;
+
+import common.FileInfo;
 
 public class MainFrame extends JFrame {
 
@@ -157,7 +155,7 @@ public class MainFrame extends JFrame {
 		if(elementIndex != 0)
 			return;		
 		
-		filesModel.removeElement(new File(fileName));		
+		filesModel.removeElement(new FileInfo(fileName));		
 	}
 	
 	public void addFileToUser(String userName, String fileName)
@@ -278,14 +276,14 @@ public class MainFrame extends JFrame {
 		
 
 //		User u1 = new User("user1");
-//		u1.files.add(new File("fis de la 1"));
-//		u1.files.add(new File("fis2 de la 1"));
+//		u1.files.add(new FileInfo("fis de la 1"));
+//		u1.files.add(new FileInfo("fis2 de la 1"));
 //
 //		usersModel.addElement(u1);
 //
 //		User u2 = new User("user2");
-//		u2.files.add(new File("fis de la 2"));
-//		u2.files.add(new File("fis2 de la 2"));
+//		u2.files.add(new FileInfo("fis de la 2"));
+//		u2.files.add(new FileInfo("fis2 de la 2"));
 //
 //		usersModel.addElement(u2);
 //		contentPane.add(usersList, gbc_usersList);

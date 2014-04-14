@@ -12,7 +12,7 @@ public class User implements Serializable
 	private static final long serialVersionUID = -3623673008436861895L;
 	
 	public final String name;		// numele utilizatorului
-	public ArrayList<File> files;	// fisierele utilizatorului
+	public ArrayList<FileInfo> files;	// fisierele utilizatorului
 	
 	/**
 	 * 	Constructor al clasei User
@@ -28,7 +28,7 @@ public class User implements Serializable
 	 * 	Metoda addFile are rolul de a adauga un fisier utilizatorului
 	 * @param file	fisierul care urmeaza sa fie adaugat
 	 */
-	public void addFile(File file)
+	public void addFile(FileInfo file)
 	{
 		files.add(file);
 	}
@@ -37,7 +37,7 @@ public class User implements Serializable
 	 * 	Metoda removeFile are rolul de a sterge un fisier
 	 * @param file	fisierul care urmeaza sa fie sters
 	 */
-	public void removeFile(File file)
+	public void removeFile(FileInfo file)
 	{
 		files.remove(file);
 	}
@@ -46,7 +46,7 @@ public class User implements Serializable
 	 * 	Metoda getFiles are rolul de a intoarce listsa de fisiere ale utilizatorului
 	 * @return	lista de fisiere
 	 */
-	public ArrayList<File> getFiles()
+	public ArrayList<FileInfo> getFiles()
 	{
 		return files;
 	}

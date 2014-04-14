@@ -3,10 +3,10 @@ package common;
 import java.io.Serializable;
 
 /**
- * 	Clasa File are rolul de a memora informatiile despre un fisier.
+ * 	Clasa FileInfo are rolul de a memora informatiile despre un fisier.
  *
  */
-public class File implements Serializable
+public class FileInfo implements Serializable
 {
 	/**
 	 * 
@@ -18,21 +18,21 @@ public class File implements Serializable
 									// fisierului
 	
 	/**
-	 * 	Constructor al clasei File
+	 * 	Constructor al clasei FileInfo
 	 * @param filename	 numele fisierului
 	 */
-	public File( String filename )
+	public FileInfo( String filename )
 	{	
 		this.filename = filename;
 		this.chunkNo = -1;
 	}
 	
 	/**
-	 * 	Constructor al clasei File
+	 * 	Constructor al clasei FileInfo
 	 * @param fileName	numele fisierului
 	 * @param chunkNo	numarul de segmente ale fisierului
 	 */
-	public File(String fileName, long chunkNo)
+	public FileInfo(String fileName, long chunkNo)
 	{
 		this(fileName);
 		
@@ -42,7 +42,7 @@ public class File implements Serializable
 	@Override
 	public boolean equals(Object obj)
 	{
-		File file = (File) obj;
+		FileInfo file = (FileInfo) obj;
 		if(file.filename.equals(filename))
 			return true;
 		

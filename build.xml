@@ -4,23 +4,29 @@
 	<property name="user2" value="user2"/>
 	<property name="user3" value="user3"/>
 
+  <path id="idpnado.classpath">
+    <pathelement location="bin"/>
+    <pathelement location="jars/log4j-1.2.17.jar"/>
+  </path>
+
+
 	<target name="run1" depends="build">
 		<java classname="idpnado.IDPApp" fork="true">
-			<classpath path="bin"/>
+			<classpath refid="idpnado.classpath"/>
 			<arg value="${user1}"/>
 		</java>
 	</target>
 
 	<target name="run2" depends="build">
 		<java classname="idpnado.IDPApp" fork="true">
-			<classpath path="bin"/>
+			<classpath refid="idpnado.classpath"/>
 			<arg value="${user2}"/>
 		</java>
 	</target>
 
 	<target name="run3" depends="build">
 		<java classname="idpnado.IDPApp" fork="true">
-			<classpath path="bin"/>
+			<classpath refid="idpnado.classpath"/>
 			<arg value="${user3}"/>
 		</java>
 	</target>

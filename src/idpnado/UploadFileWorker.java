@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import org.apache.log4j.Logger;
+
 import mediator.Mediator;
-import common.File;
+import common.FileInfo;
 
 /**
  * 	Clasa {@link UploadFileWorker} are rolul de a efectua transmiterea unui
@@ -14,13 +16,14 @@ import common.File;
  */
 public class UploadFileWorker extends SwingWorker<Integer, Integer>
 {
-	File file;			// fisierului
+	FileInfo file;			// fisierului
 	Mediator mediator;	// mediatorul
 	Transmission transmission;	// obiectul care face transferul
 	
+	private Logger logger = Logger.getLogger(UploadFileWorker.class);
 	boolean gotException = false;
 	
-	public UploadFileWorker(File file, Mediator mediator)
+	public UploadFileWorker(FileInfo file, Mediator mediator)
 	{
 		this.file = file;
 		this.mediator = mediator;
@@ -71,7 +74,7 @@ public class UploadFileWorker extends SwingWorker<Integer, Integer>
 		catch(Exception e)
 		{
 			gotException = true;
-			System.err.println("Unable to continue upload");	// TODO : log
+			logger.error("Cannot continue download of file " + file.filename);
 		}
 		return null;
 	}

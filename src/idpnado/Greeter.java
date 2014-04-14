@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
+import org.apache.log4j.Logger;
+
 import common.Constants;
 import mediator.Mediator;
 
@@ -11,6 +13,8 @@ public class Greeter
 {
 	Mediator mediator;
 	SocketChannel channel;
+	
+	Logger logger = Logger.getLogger(Greeter.class);
 	
 	public Greeter(Mediator mediator, SocketChannel channel)
 	{
@@ -20,6 +24,8 @@ public class Greeter
 	
 	public void greetClient()
 	{
+		logger.debug("Greeting client");
+		
 		new Thread(new Runnable()
 		{	
 			public int getInterest(Transmission transmission) throws IOException

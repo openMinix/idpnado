@@ -13,12 +13,16 @@ public class IDPApp {
 	 */
 	public static void main(String[] args) {
 		
+		
+		
 		if(args.length != 1)
 		{
 			System.err.println("Usage : java IDPApp userName");
-			logger.fatal("Usage: java IDPApp userName");
 			return;
 		}
+		
+		System.setProperty("logfile.name",args[0]);
+		PropertyConfigurator.configure("log4j.properties");
 		
 		String userName = args[0];
 		
@@ -44,6 +48,8 @@ public class IDPApp {
 					System.exit(-1);
 				}
 				
+				
+				logger.info("Creating server on " + ip + " with " + port);
 				new LocalFilesManager(mediator, userName);
 				new OnlineUsersManager(mediator);
 					
@@ -62,6 +68,8 @@ public class IDPApp {
 					((MainFrame) window.frame).addUser(user);
 					
 				}
+				
+				
 					
 
 			}

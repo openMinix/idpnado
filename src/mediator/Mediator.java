@@ -10,7 +10,9 @@ import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
 
-import common.File;
+import org.apache.log4j.Logger;
+
+import common.FileInfo;
 
 public class Mediator
 {
@@ -19,14 +21,9 @@ public class Mediator
 	private OnlineUsersManager onlineUsersManager;	// modulul care memoreaza informatii
 													// despre utlizatorii logati
 
-	/**
-	 * 	Constructor al clasei Mediator
-	 * @param mainFrame	interfata grafica
-	 */
-	public Mediator(MainFrame mainFrame)
-	{
-		this.mainFrame = mainFrame;
-	}
+	static Logger logger = Logger.getLogger(Mediator.class); 
+
+	
 
 	/**
 	 * 	Constructor al clasei Mediator
@@ -41,6 +38,7 @@ public class Mediator
 	 */
 	public void attachMainFrame(MainFrame mainFrame)
 	{
+		logger.debug("Attaching mainFrame");
 		this.mainFrame = mainFrame;
 	}
 	
@@ -51,6 +49,7 @@ public class Mediator
 	 */
 	public void attachLocalFilesManager(LocalFilesManager localFilesManager)
 	{
+		logger.debug( "Attaching localFilesManager");
 		this.localFilesManager = localFilesManager;
 	}
 	
@@ -87,7 +86,7 @@ public class Mediator
 	 * la lista de fisiere locale.
 	 * @param file	fisierul adaugat
 	 */
-	public void addFileToLocalFiles(File file)
+	public void addFileToLocalFiles(FileInfo file)
 	{
 		localFilesManager.addFile(file);
 		mainFrame.addFileToLocalFiles(file.filename);
@@ -101,6 +100,7 @@ public class Mediator
 	 */
 	public byte[] getChunk(String fileName, int index)
 	{
+		logger.debug(" Getting chunk " + index + " from " + fileName);
 		return localFilesManager.getChunk(fileName, index);
 	}
 	
@@ -112,6 +112,7 @@ public class Mediator
 	 */
 	public void startUpload(String fileName, String destinationName, Transmission transmission)
 	{
+		logger.info("Upload of file " + fileName + " to " + destinationName + "started");
 		JProgressBar progressBar = mainFrame.addUploadToDownloadTable(fileName, destinationName);
 		localFilesManager.uploadFile(fileName, destinationName, progressBar, transmission);
 	}
@@ -123,6 +124,7 @@ public class Mediator
 	 */
 	public void addUser(String userName)
 	{
+		logger.info("User " + userName + " added");
 		onlineUsersManager.addUser(userName);
 		mainFrame.addUser(userName);
 	}
@@ -134,6 +136,8 @@ public class Mediator
 	 */
 	public void removeUser(String userName)
 	{
+		logger.info("User " + userName + " removed");
+
 		mainFrame.removeUser(userName);
 		onlineUsersManager.removeUser(userName);
 	}
@@ -143,8 +147,10 @@ public class Mediator
 	 * @param userName	numele utilizatorului
 	 * @param file	fisierul adaugat
 	 */
-	public void addFileToUser(String userName, File file)
+	public void addFileToUser(String userName, FileInfo file)
 	{
+		logger.info("File " + file.filename + " added to " + userName);
+
 		onlineUsersManager.addFile(userName, file);
 		mainFrame.addFileToUser(userName, file.filename);
 	}
@@ -156,6 +162,8 @@ public class Mediator
 	 */
 	public void removeFileFromUser(String userName, String fileName)
 	{
+		logger.info("File " + fileName + " removed from " + userName);
+
 		mainFrame.removeFileFromUser(userName, fileName);
 		onlineUsersManager.removeFile(userName, fileName);
 	}
@@ -178,6 +186,8 @@ public class Mediator
 	 */
 	public ArrayList<String> getOnlineUsers()
 	{
+		logger.debug("Getting online users");
+		
 		return onlineUsersManager.getOnlineUsers();
 	}
 		
@@ -189,6 +199,7 @@ public class Mediator
 	 */
 	public void startDownload(final String userName, final String fileName, final JProgressBar progressBar)
 	{
+		logger.info("Download of file " + fileName + " from " + userName);
 		onlineUsersManager.downloadFile(userName, fileName, progressBar);
 	}
 	
