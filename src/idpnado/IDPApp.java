@@ -1,9 +1,11 @@
 package idpnado;
 
 import mediator.Mediator;
-
+import org.apache.log4j.*;
 public class IDPApp {
 
+	static Logger logger = Logger.getLogger(IDPApp.class); 
+	
 	private MainFrame frame;
 
 	/**
@@ -14,6 +16,7 @@ public class IDPApp {
 		if(args.length != 1)
 		{
 			System.err.println("Usage : java IDPApp userName");
+			logger.fatal("Usage: java IDPApp userName");
 			return;
 		}
 		
@@ -37,6 +40,7 @@ public class IDPApp {
 				if(!(new Server(mediator, ip, portNo).create()))
 				{
 					System.err.println("Unable to start server");
+					logger.error("Unable to start server");
 					System.exit(-1);
 				}
 				
@@ -56,6 +60,7 @@ public class IDPApp {
 				for(String user : mediator.getOnlineUsers())
 				{
 					((MainFrame) window.frame).addUser(user);
+					
 				}
 					
 
