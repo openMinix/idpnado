@@ -2,6 +2,8 @@ package idpnado;
 
 import static org.junit.Assert.*;
 
+import idpnado.mockups.TransmissionMockup;
+
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
@@ -13,7 +15,7 @@ import org.junit.Test;
 
 public class TransmissionTest {
 
-	Transmission t;
+	TransmissionImpl t;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -24,7 +26,7 @@ public class TransmissionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		t = new Transmission("127.0.0.1", 9999, "lala");
+		t = new TransmissionImpl("127.0.0.1", 9999, "lala");
 	}
 
 	@After

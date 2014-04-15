@@ -1,5 +1,7 @@
 package idpnado;
 
+import idpnado.interfaces.Transmission;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -9,7 +11,7 @@ import org.apache.log4j.Logger;
 
 import common.Constants;
 
-public class Transmission
+public class TransmissionImpl implements Transmission
 {
 	public SocketChannel channel;
 	
@@ -19,21 +21,25 @@ public class Transmission
 	
 	boolean isOpened = false;
 	
-	static Logger logger = Logger.getLogger(Transmission.class);
-	public Transmission(SocketChannel channel)
+	static Logger logger = Logger.getLogger(TransmissionImpl.class);
+	public TransmissionImpl(SocketChannel channel)
 	{
 		this.channel = channel;
 		
 		isOpened = true;
 	}
 	
-	public Transmission(String IP, int port, String myName)
+	public TransmissionImpl(String IP, int port, String myName)
 	{
 		this.IP = IP;
 		this.port = port;
 		this.myName = myName;
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#open()
+	 */
+	@Override
 	public boolean open()
 	{
 		logger.debug("Channel is opening");
@@ -51,13 +57,17 @@ public class Transmission
 		catch(IOException e)
 		{
 			logger.error("Error on channel connection");
-			e.printStackTrace();
+			
 			return false;
 		}
 		
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#writeMessage(java.nio.ByteBuffer)
+	 */
+	@Override
 	public boolean writeMessage(ByteBuffer buffer)
 	{
 		int written = 0; 
@@ -80,12 +90,16 @@ public class Transmission
 		catch(IOException e)
 		{
 			logger.error("Error on writing " + buffer.toString());
-			e.printStackTrace();
+			
 		}
 		
 		return true;
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#writeBytes(byte[])
+	 */
+	@Override
 	public boolean writeBytes(byte[] bytes)
 	{
 		ByteBuffer buffer = ByteBuffer.allocate(bytes.length + 4);
@@ -97,6 +111,10 @@ public class Transmission
 		return writeMessage(buffer);
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#writeAck()
+	 */
+	@Override
 	public boolean writeAck()
 	{
 		logger.debug("Writing ack");
@@ -106,6 +124,10 @@ public class Transmission
 		return writeMessage(buffer);
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#writeInterest(int)
+	 */
+	@Override
 	public boolean writeInterest(int interest)
 	{
 		ByteBuffer buffer = ByteBuffer.allocate(4);
@@ -114,6 +136,10 @@ public class Transmission
 		return writeMessage(buffer);		
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#writeString(java.lang.String)
+	 */
+	@Override
 	public boolean writeString(String text)
 	{
 		byte[] bytes = text.getBytes();
@@ -121,6 +147,10 @@ public class Transmission
 		return writeBytes(bytes);
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#getMessage(int)
+	 */
+	@Override
 	public ByteBuffer getMessage(int size)
 	{
 		logger.debug("Receiving message of size " + size);
@@ -142,12 +172,16 @@ public class Transmission
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			
 		}
 		
 		return buffer;
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#getAck()
+	 */
+	@Override
 	public boolean getAck()
 	{
 		ByteBuffer buffer = getMessage(4);
@@ -161,6 +195,10 @@ public class Transmission
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#getMessage()
+	 */
+	@Override
 	public ByteBuffer getMessage()
 	{
 		logger.info("Getting message");
@@ -194,13 +232,17 @@ public class Transmission
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+			
 			return null;
 		}
 		
 		return buffer;
 	}	
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#getChunk()
+	 */
+	@Override
 	public byte[] getChunk()
 	{
 		ByteBuffer buffer = ByteBuffer.allocate(4);
@@ -233,7 +275,7 @@ public class Transmission
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
+		
 			return null;
 		}
 		
@@ -244,6 +286,10 @@ public class Transmission
 		return bytes;
 	}		
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Transimission#close()
+	 */
+	@Override
 	public void close()
 	{
 		logger.debug("Closing channel");

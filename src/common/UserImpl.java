@@ -3,11 +3,13 @@ package common;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import common.interfaces.User;
+
 /**
- * 	Clasa User are rolul de a memora informatiile despre un utilizator
+ * 	Clasa UserImpl are rolul de a memora informatiile despre un utilizator
  *
  */
-public class User implements Serializable
+public class UserImpl implements User, Serializable
 {	
 	private static final long serialVersionUID = -3623673008436861895L;
 	
@@ -15,10 +17,10 @@ public class User implements Serializable
 	public ArrayList<FileInfo> files;	// fisierele utilizatorului
 	
 	/**
-	 * 	Constructor al clasei User
+	 * 	Constructor al clasei UserImpl
 	 * @param username	numele utilizatorului
 	 */
-	public User(String username)
+	public UserImpl(String username)
 	{
 		this.name = username;
 		files = new ArrayList<>();
@@ -54,7 +56,7 @@ public class User implements Serializable
 	@Override
 	public boolean equals(Object obj) 
 	{
-		User user = (User) obj;
+		UserImpl user = (UserImpl) obj;
 		if(user.name.equals(name))
 			return true;
 		

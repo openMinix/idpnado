@@ -1,6 +1,6 @@
 package idpnado;
 
-import mediator.Mediator;
+import mediator.MediatorImpl;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class ServerTest {
 
-	private Server server;
+	private ServerImpl server;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -21,7 +21,7 @@ public class ServerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		server = new Server(new Mediator(), "127.0.0.1", 9999);
+		server = new ServerImpl(new MediatorImpl(), "127.0.0.1", 9999);
 	}
 
 	@After

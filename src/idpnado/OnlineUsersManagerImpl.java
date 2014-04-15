@@ -1,5 +1,9 @@
 package idpnado;
 
+import idpnado.interfaces.DiskAccess;
+import idpnado.interfaces.OnlineUsersManager;
+import idpnado.interfaces.Transmission;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.nio.ByteBuffer;
@@ -10,28 +14,29 @@ import javax.swing.JProgressBar;
 
 import org.apache.log4j.Logger;
 
-import mediator.Mediator;
+import mediator.MediatorImpl;
+import mediator.interfaces.Mediator;
 
 import common.Constants;
 import common.FileInfo;
-import common.User;
+import common.UserImpl;
 
 /**
- * 	Clasa {@link OnlineUsersManager} are rolul de a memora informatii
+ * 	Clasa {@link OnlineUsersManagerImpl} are rolul de a memora informatii
  * despre utilizatorii logati
  *
  */
-public class OnlineUsersManager
+public class OnlineUsersManagerImpl implements OnlineUsersManager 
 {
-	private ArrayList<User> onlineUsers;	// lista de utilizatori logati
+	private ArrayList<UserImpl> onlineUsers;	// lista de utilizatori logati
 	private Mediator mediator;				// mediatorul
 
-	Logger logger = Logger.getLogger(OnlineUsersManager.class);
+	Logger logger = Logger.getLogger(OnlineUsersManagerImpl.class);
 	/**
-	 * 	Constructor al clasei OnlineUsersManager
+	 * 	Constructor al clasei OnlineUsersManagerImpl
 	 * @param mediator	mediatorul
 	 */
-	public OnlineUsersManager(Mediator mediator)
+	public OnlineUsersManagerImpl(Mediator mediator)
 	{
 		this.mediator = mediator;
 		onlineUsers = new ArrayList<>();
@@ -40,9 +45,9 @@ public class OnlineUsersManager
 		
 		for(String auxUser : users)
 		{
-			User user = new User(auxUser);
+			UserImpl user = new UserImpl(auxUser);
 			
-			DiskAccess diskAccess = new DiskAccess(auxUser);
+			DiskAccess diskAccess = new DIskAccessImpl(auxUser);
 			String[] files = diskAccess.getFiles();
 		
 			for(int i = 0; i < files.length; i++)
@@ -57,68 +62,64 @@ public class OnlineUsersManager
 		this.mediator.attachOnlineUsersManager(this);
 	}
 	
-	/**
-	 * 	Metoda addUser are rolul de a adauga un utilizator in lista
-	 * @param userName	numele utilizatorului
+	/* (non-Javadoc)
+	 * @see idpnado.OnlineUsersManager#addUser(java.lang.String)
 	 */
+	@Override
 	public void addUser(String userName)
 	{
 		logger.debug("Adding user");
-		onlineUsers.add(new User(userName));
+		onlineUsers.add(new UserImpl(userName));
 	}
 	
-	/**
-	 * 	Metoda removeUser are rolul de sterge un utilizator din lista
-	 * @param userName	numele utilizatorului
+	/* (non-Javadoc)
+	 * @see idpnado.OnlineUsersManager#removeUser(java.lang.String)
 	 */
+	@Override
 	public void removeUser(String userName)
 	{
 		logger.debug("Removing user");
-		onlineUsers.remove(new User(userName));
+		onlineUsers.remove(new UserImpl(userName));
 	}
 	
-	/**
-	 * 	Metoda addFile are rolul de a adauga un fisier unui utilizator
-	 * @param userName	numele utilizatorului
-	 * @param file	fisierul care urmeaza sa fie adaugat
+	/* (non-Javadoc)
+	 * @see idpnado.OnlineUsersManager#addFile(java.lang.String, common.FileInfo)
 	 */
+	@Override
 	public void addFile(String userName, FileInfo file)
 	{
 		logger.debug("Adding file for " + userName + " file " + file.toString() );
 
-		int index = onlineUsers.indexOf(new User(userName));
+		int index = onlineUsers.indexOf(new UserImpl(userName));
 		if(index == -1)
 			return;
 		
 		onlineUsers.get(index).addFile(file);
 	}
 	
-	/**
-	 * 	Metoda removeFile are rolul de a sterge un fisier al unui utilizator
-	 * @param userName	numele utilizatorului
-	 * @param fileName	numele fisierului
+	/* (non-Javadoc)
+	 * @see idpnado.OnlineUsersManager#removeFile(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void removeFile(String userName, String fileName)
 	{
 		logger.debug("Removing file from " + userName + " file " + fileName);
-		int index = onlineUsers.indexOf(new User(userName));
+		int index = onlineUsers.indexOf(new UserImpl(userName));
 		if(index == -1)
 			return;
 		
 		onlineUsers.get(index).removeFile(new FileInfo(fileName));
 	}
 	
-	/**
-	 * 	Metoda getFileList are rolul de a intoarce lista de fisiere
-	 * ale unui utilizator
-	 * @param userName	numele utilizatorului
-	 * @return	lista de fisiere
+	/* (non-Javadoc)
+	 * @see idpnado.OnlineUsersManager#getFileList(java.lang.String)
 	 */
+	@Override
 	public ArrayList<String> getFileList(String userName)
 	{
 		ArrayList<String> fileList = new ArrayList<>();
 		
-		for(User user : onlineUsers)
+		for(UserImpl user : onlineUsers)
 		{
 			if(userName.equals(user.name))
 			{
@@ -132,16 +133,15 @@ public class OnlineUsersManager
 		return fileList;
 	}
 	
-	/**
-	 * 	Metoda getOnlineUsers are rolul de a intoarce lista de utilizatori
-	 * logati
-	 * @return	lista de utilizatori
+	/* (non-Javadoc)
+	 * @see idpnado.OnlineUsersManager#getOnlineUsers()
 	 */
+	@Override
 	public ArrayList<String> getOnlineUsers()
 	{
 		ArrayList<String> users = new ArrayList<>();
 		
-		for(User onlineUser : onlineUsers)
+		for(UserImpl onlineUser : onlineUsers)
 		{
 			users.add(onlineUser.name);
 		}
@@ -149,6 +149,10 @@ public class OnlineUsersManager
 		return users;
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.OnlineUsersManager#prepareFileDownload(java.lang.String, java.lang.String, idpnado.DownloadFileWorker)
+	 */
+	@Override
 	public void prepareFileDownload(final String userName, final String fileName, final DownloadFileWorker worker)
 	{
 		new Thread(new Runnable()
@@ -159,14 +163,14 @@ public class OnlineUsersManager
 				UserInformationFileParser uifp = new UserInformationFileParser();
 				if(!uifp.checkUserName(userName))
 				{
-					System.err.println("User doesn't exist!");
+					System.err.println("UserImpl doesn't exist!");
 					return;
 				}
 				
 				String ip = uifp.ip;
 				int portNo = uifp.portNo;
 				
-				Transmission transmission = new Transmission(ip, portNo, mediator.getMyName());
+				Transmission transmission = new TransmissionImpl(ip, portNo, mediator.getMyName());
 				if(!transmission.open())
 				{
 					System.err.println("Unable to open socket");
@@ -234,26 +238,23 @@ public class OnlineUsersManager
 		
 	}
 	
-	/**
-	 * 	Metoda downloadFile are rolul de a porni descarcarea unui fisier prin crearea unui
-	 * DownloadFileWorker.
-	 * @param userName	numele sursei fisierului
-	 * @param fileName	numele fisierului
-	 * @param progressBar	progressBar-ul corespunzator descarcarii fisierului
+	/* (non-Javadoc)
+	 * @see idpnado.OnlineUsersManager#downloadFile(java.lang.String, java.lang.String, javax.swing.JProgressBar)
 	 */
+	@Override
 	public void downloadFile(final String userName, final String fileName, final JProgressBar progressBar)
 	{
-		int index = onlineUsers.indexOf(new User(userName));
+		int index = onlineUsers.indexOf(new UserImpl(userName));
 		if(index == -1)	//TODO : throw exception
 			return;
-		User user = onlineUsers.get(index);
+		UserImpl user = onlineUsers.get(index);
 		
 		index = user.files.indexOf(new FileInfo(fileName));
 		if(index == -1) //TODO : throw exception
 			return;
 		final FileInfo file = user.files.get(index);
 		
-		DiskAccess diskAccess = new DiskAccess(mediator.getMyName());
+		DiskAccess diskAccess = new DIskAccessImpl(mediator.getMyName());
 		diskAccess.removeFile(fileName);
 			
 		final DownloadFileWorker worker = new DownloadFileWorker(file, user, mediator);

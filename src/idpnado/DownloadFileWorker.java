@@ -1,5 +1,7 @@
 package idpnado;
 
+import idpnado.interfaces.Transmission;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.List;
@@ -8,10 +10,10 @@ import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 
-import mediator.Mediator;
+import mediator.interfaces.Mediator;
 import common.Constants;
 import common.FileInfo;
-import common.User;
+import common.UserImpl;
 
 /**
  * 	Clasa {@link DownloadFileWorker} are rolul de a efectua descarcarea unui fisier
@@ -20,7 +22,7 @@ import common.User;
 public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 {
 	FileInfo file;			// fisierul
-	User user;			// sursa fisierului
+	UserImpl user;			// sursa fisierului
 	Mediator mediator;	// mediatorul
 	Transmission trasmission;	// modulul de transmisie
 	
@@ -37,14 +39,14 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 	 * @param user	utilizatorul de la care se face descarcarea
 	 * @param mediator	mediatorul
 	 */
-	public DownloadFileWorker(FileInfo file, User user, Mediator mediator)
+	public DownloadFileWorker(FileInfo file, UserImpl user, Mediator mediator)
 	{
 		logger.debug("Creating download worker for " + file.toString() + " for " + user.toString());
 		this.file = file;
 		this.user = user;
 		this.mediator = mediator;
 		
-		diskFile = new DiskAccess(mediator.getMyName()).open(file.filename);
+		diskFile = new DIskAccessImpl(mediator.getMyName()).open(file.filename);
 	}
 	
 	/**
@@ -74,8 +76,9 @@ public class DownloadFileWorker extends SwingWorker<Integer, Integer>
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
-			System.err.println("Accesing inexistent file");
+		
+			logger.error("Accessing inexistent file");
+			
 			
 			try
 			{

@@ -1,34 +1,36 @@
 package mediator;
 
-import idpnado.LocalFilesManager;
+import idpnado.interfaces.LocalFilesManager;
 import idpnado.MainFrame;
-import idpnado.OnlineUsersManager;
+import idpnado.OnlineUsersManagerImpl;
 import idpnado.TransferState;
-import idpnado.Transmission;
+import idpnado.interfaces.Transmission;
 
 import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
 
+import mediator.interfaces.Mediator;
+
 import org.apache.log4j.Logger;
 
 import common.FileInfo;
 
-public class Mediator
+public class MediatorImpl implements Mediator
 {
 	private MainFrame mainFrame;	// interata grafica
 	private LocalFilesManager localFilesManager;	// modulul care se ocupa de fisierele locale
-	private OnlineUsersManager onlineUsersManager;	// modulul care memoreaza informatii
+	private OnlineUsersManagerImpl onlineUsersManager;	// modulul care memoreaza informatii
 													// despre utlizatorii logati
 
-	static Logger logger = Logger.getLogger(Mediator.class); 
+	static Logger logger = Logger.getLogger(MediatorImpl.class); 
 
 	
 
 	/**
-	 * 	Constructor al clasei Mediator
+	 * 	Constructor al clasei MediatorImpl
 	 */
-	public Mediator()
+	public MediatorImpl()
 	{
 	}
 
@@ -58,7 +60,7 @@ public class Mediator
 	 * care memoreaza informatii despre utilizatorii logati
 	 * @param onlineUsersManager	modulul
 	 */
-	public void attachOnlineUsersManager(OnlineUsersManager onlineUsersManager)
+	public void attachOnlineUsersManager(OnlineUsersManagerImpl onlineUsersManager)
 	{
 		this.onlineUsersManager = onlineUsersManager;
 	}
@@ -124,7 +126,7 @@ public class Mediator
 	 */
 	public void addUser(String userName)
 	{
-		logger.info("User " + userName + " added");
+		logger.info("UserImpl " + userName + " added");
 		onlineUsersManager.addUser(userName);
 		mainFrame.addUser(userName);
 	}
@@ -136,7 +138,7 @@ public class Mediator
 	 */
 	public void removeUser(String userName)
 	{
-		logger.info("User " + userName + " removed");
+		logger.info("UserImpl " + userName + " removed");
 
 		mainFrame.removeUser(userName);
 		onlineUsersManager.removeUser(userName);

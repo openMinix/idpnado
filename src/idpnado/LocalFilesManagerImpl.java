@@ -1,5 +1,9 @@
 package idpnado;
 
+import idpnado.interfaces.DiskAccess;
+import idpnado.interfaces.LocalFilesManager;
+import idpnado.interfaces.Transmission;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -9,36 +13,36 @@ import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
 
-import org.apache.log4j.Logger;
+import mediator.MediatorImpl;
 
-import mediator.Mediator;
+import org.apache.log4j.Logger;
 
 import common.Constants;
 import common.FileInfo;
-import common.User;
+import common.UserImpl;
 
 /**
- * 	Clasa {@link LocalFilesManager} are rolul de a memora fisierele
+ * 	Clasa {@link LocalFilesManagerImpl} are rolul de a memora fisierele
  * utilizatorului curent
  *
  */
-public class LocalFilesManager
+public class LocalFilesManagerImpl implements LocalFilesManager
 {
-	private Mediator mediator;	// mediatorul
-	private User me;			// o referinta catre utilizatorul curent
+	private MediatorImpl mediator;	// mediatorul
+	private UserImpl me;			// o referinta catre utilizatorul curent
 	
-	private Logger logger = Logger.getLogger(LocalFilesManager.class);
+	private Logger logger = Logger.getLogger(LocalFilesManagerImpl.class);
 	
 	/**
-	 * 	Constructor al clasei LocalFilesManager
+	 * 	Constructor al clasei LocalFilesManagerImpl
 	 * @param mediator	o referinta catre mediator
 	 * @param myUserName	numele utilizatorului
 	 */
-	public LocalFilesManager(Mediator mediator, String myUserName)
+	public LocalFilesManagerImpl(MediatorImpl mediator, String myUserName)
 	{
-		me = new User(myUserName);
+		me = new UserImpl(myUserName);
 		
-		DiskAccess diskAccess = new DiskAccess(myUserName);
+		DiskAccess diskAccess = new DIskAccessImpl(myUserName);
 		String[] myFiles = diskAccess.getFiles();
 		
 		for(String str : myFiles)
@@ -55,33 +59,31 @@ public class LocalFilesManager
 		this.mediator.attachLocalFilesManager(this);
 	}
 	
-	public LocalFilesManager() {
+	public LocalFilesManagerImpl() {
 		// TODO Auto-generated constructor stub
 	}
-	/**
-	 * 	Metoda addFile are rolul de a adauga un fisier utilizatorului
-	 * curent
-	 * @param file	fisierul adaugat
+	/* (non-Javadoc)
+	 * @see idpnado.LocalFilesManager#addFile(common.FileInfo)
 	 */
+	@Override
 	public void addFile(FileInfo file)
 	{
 		me.files.add(file);
 	}
 	
-	/**
-	 * 	Metoda deleteFile are rolul de a sterge un fisier
-	 * @param file	fisierul care urmeaza sa fie sters
+	/* (non-Javadoc)
+	 * @see idpnado.LocalFilesManager#deleteFile(common.FileInfo)
 	 */
+	@Override
 	public void deleteFile(FileInfo file)
 	{
 		me.files.remove(file);
 	}
 	
-	/**
-	 * 	Metoda getFiles are rolul de a intoarce o lista cu
-	 * numele fisierelor
-	 * @return	lista cu nume de fisiere
+	/* (non-Javadoc)
+	 * @see idpnado.LocalFilesManager#getFiles()
 	 */
+	@Override
 	public ArrayList<String> getFiles()
 	{
 		ArrayList<String> myFiles = new ArrayList<>();
@@ -92,23 +94,19 @@ public class LocalFilesManager
 		return myFiles;
 	}
 	
-	/**
-	 * 	Metoda getMyName are rolul de a intoarce numele utilizatorului
-	 * curent
-	 * @return	numele utilizatorului
+	/* (non-Javadoc)
+	 * @see idpnado.LocalFilesManager#getMyName()
 	 */
+	@Override
 	public String getMyName()
 	{
 		return me.name;
 	}
 	
-	/**
-	 * 	Metoda getChunk are rolul de a intoarce un anumit
-	 * segment din fisier
-	 * @param fileName	numele fisierului
-	 * @param chunk	numarul segmentului
-	 * @return	segmentul de date
+	/* (non-Javadoc)
+	 * @see idpnado.LocalFilesManager#getChunk(java.lang.String, int)
 	 */
+	@Override
 	public byte[] getChunk(String fileName, int chunk)
 	{
 		int index = me.files.indexOf(new FileInfo(fileName));
@@ -120,7 +118,7 @@ public class LocalFilesManager
 		if(chunk >= file.chunkNo)
 			return null;
 		
-		DiskAccess diskAcces = new DiskAccess(me.name);
+		DiskAccess diskAcces = new DIskAccessImpl(me.name);
 		RandomAccessFile raf = null;
 		
 		try
@@ -157,7 +155,6 @@ public class LocalFilesManager
 		}
 		catch(IOException e)
 		{
-			e.printStackTrace();
 			System.err.println("Accesing inexistent file");
 			
 			try
@@ -173,6 +170,10 @@ public class LocalFilesManager
 		return null;
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.LocalFilesManager#prepareFileUpload(idpnado.TransmissionImpl, common.FileInfo, idpnado.UploadFileWorker)
+	 */
+	@Override
 	public void prepareFileUpload(final Transmission transmission, final FileInfo file, final UploadFileWorker worker)
 	{
 		logger.debug("Preparing file upload for " + file.toString() );
@@ -206,14 +207,10 @@ public class LocalFilesManager
 
 	
 	
-	/**
-	 * 	Metoda uploadFile are rolul de a creea un UploadFileWorker care
-	 * se va ocupa de trimiterea datelor si de a actualizarea starii
-	 * in partea grafica
-	 * @param fileName	numele fisierului
-	 * @param destinationName	numele utilizatorului care descarca fisierul
-	 * @param progressBar	progressBar-ul asociat transferului de fisier
+	/* (non-Javadoc)
+	 * @see idpnado.LocalFilesManager#uploadFile(java.lang.String, java.lang.String, javax.swing.JProgressBar, idpnado.TransmissionImpl)
 	 */
+	@Override
 	public void uploadFile(final String fileName, final String destinationName, final JProgressBar progressBar, Transmission transmission)
 	{
 		logger.debug("Uploading file");

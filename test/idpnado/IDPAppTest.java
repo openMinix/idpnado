@@ -1,8 +1,6 @@
 package idpnado;
 
-import static org.junit.Assert.*;
-
-import mediator.Mediator;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;

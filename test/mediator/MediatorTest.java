@@ -1,7 +1,7 @@
 package mediator;
 
-import static org.junit.Assert.*;
-import idpnado.LocalFilesManager;
+import static org.junit.Assert.assertNull;
+import idpnado.mockups.LocalFilesManagerMockup;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -11,7 +11,8 @@ import org.junit.Test;
 
 public class MediatorTest {
 
-	private Mediator mediator;
+	private MediatorImpl mediator;
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 	}
@@ -22,7 +23,7 @@ public class MediatorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		mediator = new Mediator();
+		mediator = new MediatorImpl();
 	}
 
 	@After
@@ -30,10 +31,10 @@ public class MediatorTest {
 		mediator = null;
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void onAttachLocalFilesManagertest() {
-		mediator.attachLocalFilesManager(new LocalFilesManager());
-		assertNull( mediator.getMyName());
+		mediator.attachLocalFilesManager(new LocalFilesManagerMockup());
+		assert(mediator.getMyName()!= null);
 	}
 
 }

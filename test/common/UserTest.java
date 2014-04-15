@@ -12,7 +12,7 @@ import org.junit.Test;
 
 public class UserTest {
 
-	private User user;
+	private UserImpl user;
 	private ArrayList<FileInfo> finfos;
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -24,7 +24,7 @@ public class UserTest {
 
 	@Before
 	public void setUp() throws Exception {
-		user = new User("Messi");
+		user = new UserImpl("Messi");
 		finfos = user.files;
 		finfos.add( new FileInfo("fistest1"));
 		finfos.add( new FileInfo("fistest2"));

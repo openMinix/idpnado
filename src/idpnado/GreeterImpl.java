@@ -1,5 +1,8 @@
 package idpnado;
 
+import idpnado.interfaces.Greeter;
+import idpnado.interfaces.Transmission;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -7,21 +10,25 @@ import java.nio.channels.SocketChannel;
 import org.apache.log4j.Logger;
 
 import common.Constants;
-import mediator.Mediator;
+import mediator.MediatorImpl;
 
-public class Greeter
+public class GreeterImpl implements Greeter
 {
-	Mediator mediator;
+	MediatorImpl mediator;
 	SocketChannel channel;
 	
-	Logger logger = Logger.getLogger(Greeter.class);
+	Logger logger = Logger.getLogger(GreeterImpl.class);
 	
-	public Greeter(Mediator mediator, SocketChannel channel)
+	public GreeterImpl(MediatorImpl mediator, SocketChannel channel)
 	{
 		this.mediator = mediator;
 		this.channel = channel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see idpnado.Greeter#greetClient()
+	 */
+	@Override
 	public void greetClient()
 	{
 		logger.debug("Greeting client");
@@ -95,7 +102,7 @@ public class Greeter
 			@Override
 			public void run()
 			{
-				Transmission transmission = new Transmission(channel);
+				Transmission transmission = new TransmissionImpl(channel);
 								
 				try
 				{
@@ -115,7 +122,8 @@ public class Greeter
 			
 				catch(IOException e)
 				{
-					e.printStackTrace(); // TODO : log
+					logger.error("Error on transmission");
+					
 					transmission.close();
 					return;
 				}

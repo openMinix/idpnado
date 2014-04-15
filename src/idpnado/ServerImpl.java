@@ -1,5 +1,7 @@
 package idpnado;
 
+import idpnado.interfaces.Server;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.ClosedChannelException;
@@ -9,21 +11,21 @@ import java.nio.channels.SocketChannel;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
-import mediator.Mediator;
+import mediator.MediatorImpl;
 
-public class Server
+public class ServerImpl implements Server
 {
-	private Mediator mediator;
+	private MediatorImpl mediator;
 	ServerSocketChannel serverSocketChannel = null;
 	
 	String IP = null;
 	int port = -1;
 	
-	Logger logger = Logger.getLogger(Server.class);
+	Logger logger = Logger.getLogger(ServerImpl.class);
 	
 	boolean mustExit = false;
 	
-	public Server(Mediator mediator, String IP, int port)
+	public ServerImpl(MediatorImpl mediator, String IP, int port)
 	{
 		this.mediator = mediator;
 		this.IP = IP;
@@ -50,7 +52,7 @@ public class Server
 						{
 							SocketChannel channel = serverSocketChannel.accept();
 							
-							new Greeter(mediator, channel).greetClient();
+							new GreeterImpl(mediator, channel).greetClient();
 						}
 						catch(ClosedChannelException e)
 						{
@@ -60,7 +62,7 @@ public class Server
 						catch(IOException e)
 						{
 							logger.error("Error IOException on creating server");
-							e.printStackTrace(); 
+						 
 							mustExit = true;
 						}
 					}

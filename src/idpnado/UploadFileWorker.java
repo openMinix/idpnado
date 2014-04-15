@@ -1,12 +1,14 @@
 package idpnado;
 
+import idpnado.interfaces.Transmission;
+
 import java.util.List;
 
 import javax.swing.SwingWorker;
 
 import org.apache.log4j.Logger;
 
-import mediator.Mediator;
+import mediator.MediatorImpl;
 import common.FileInfo;
 
 /**
@@ -17,13 +19,13 @@ import common.FileInfo;
 public class UploadFileWorker extends SwingWorker<Integer, Integer>
 {
 	FileInfo file;			// fisierului
-	Mediator mediator;	// mediatorul
+	MediatorImpl mediator;	// mediatorul
 	Transmission transmission;	// obiectul care face transferul
 	
 	private Logger logger = Logger.getLogger(UploadFileWorker.class);
 	boolean gotException = false;
 	
-	public UploadFileWorker(FileInfo file, Mediator mediator)
+	public UploadFileWorker(FileInfo file, MediatorImpl mediator)
 	{
 		this.file = file;
 		this.mediator = mediator;

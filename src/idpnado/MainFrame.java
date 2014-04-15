@@ -16,7 +16,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import mediator.Mediator;
+import mediator.MediatorImpl;
 
 import common.FileInfo;
 
@@ -36,13 +36,13 @@ public class MainFrame extends JFrame {
 	private DefaultListModel<String> filesModel;
 	private DownloadsTableModel dtm;
 	
-	private Mediator mediator;
+	private MediatorImpl mediator;
 	
 
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame(Mediator mediator) {
+	public MainFrame(MediatorImpl mediator) {
 		
 		this.mediator = mediator;
 		
@@ -275,13 +275,13 @@ public class MainFrame extends JFrame {
 		contentPane.add(usersList, gbc_usersList);		
 		
 
-//		User u1 = new User("user1");
+//		UserImpl u1 = new UserImpl("user1");
 //		u1.files.add(new FileInfo("fis de la 1"));
 //		u1.files.add(new FileInfo("fis2 de la 1"));
 //
 //		usersModel.addElement(u1);
 //
-//		User u2 = new User("user2");
+//		UserImpl u2 = new UserImpl("user2");
 //		u2.files.add(new FileInfo("fis de la 2"));
 //		u2.files.add(new FileInfo("fis2 de la 2"));
 //

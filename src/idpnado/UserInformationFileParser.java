@@ -50,7 +50,7 @@ public class UserInformationFileParser {
 		try {
 			reader = new BufferedReader(new FileReader(userInfoFile));
 		} catch (FileNotFoundException e) {
-			System.err.println("User information file doesn't exist");
+			System.err.println("UserImpl information file doesn't exist");
 			return false;
 		}
 
@@ -101,7 +101,7 @@ public class UserInformationFileParser {
 		try {
 			reader = new BufferedReader(new FileReader(userInfoFile));
 		} catch (FileNotFoundException e) {
-			System.err.println("User information file doesn't exist");
+			System.err.println("UserImpl information file doesn't exist");
 			return null;
 		}
 

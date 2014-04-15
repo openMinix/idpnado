@@ -1,6 +1,6 @@
 package idpnado;
 
-import mediator.Mediator;
+import mediator.MediatorImpl;
 import org.apache.log4j.*;
 public class IDPApp {
 
@@ -39,9 +39,9 @@ public class IDPApp {
 //			public void run() {
 			try
 			{
-				Mediator mediator = new Mediator();
+				MediatorImpl mediator = new MediatorImpl();
 				
-				if(!(new Server(mediator, ip, portNo).create()))
+				if(!(new ServerImpl(mediator, ip, portNo).create()))
 				{
 					System.err.println("Unable to start server");
 					logger.error("Unable to start server");
@@ -50,11 +50,11 @@ public class IDPApp {
 				
 				
 				logger.info("Creating server on " + ip + " with " + port);
-				new LocalFilesManager(mediator, userName);
-				new OnlineUsersManager(mediator);
+				new LocalFilesManagerImpl(mediator, userName);
+				new OnlineUsersManagerImpl(mediator);
 					
 
-//				new Thread(new Mediator()).start();
+//				new Thread(new MediatorImpl()).start();
 
 				IDPApp window = new IDPApp(mediator);
 				window.frame.setVisible(true);
@@ -75,7 +75,7 @@ public class IDPApp {
 			}
 			catch (Exception e)
 			{
-				e.printStackTrace();
+				
 			}
 //			}
 //		});
@@ -88,14 +88,14 @@ public class IDPApp {
 	/**
 	 * Create the application.
 	 */
-	public IDPApp(Mediator mediator) {
+	public IDPApp(MediatorImpl mediator) {
 		initialize(mediator);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize(Mediator mediator) {
+	private void initialize(MediatorImpl mediator) {
 		frame = new MainFrame(mediator);
 
 	}

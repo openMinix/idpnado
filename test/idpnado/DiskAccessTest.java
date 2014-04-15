@@ -1,6 +1,7 @@
 package idpnado;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,18 +9,16 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DiskAccessTest {
 
-	private DiskAccess da;
+	private DIskAccessImpl da;
 	private File testFile;
 	@Before
 	public void setUp() throws Exception {
-		da = new DiskAccess("TestUser");
+		da = new DIskAccessImpl("TestUser");
 		testFile = new File(da.root, "file1");
 		
 		BufferedWriter bw =new BufferedWriter( new PrintWriter(testFile));
