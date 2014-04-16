@@ -4,5 +4,6 @@
 *.war
 *.ear
 /bin
+log/*
 
 *.tmp

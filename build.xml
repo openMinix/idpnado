@@ -60,7 +60,9 @@
 		<mkdir dir="bin"/>
 		<javac includeantruntime="false"
 			srcdir="src"
-			destdir="bin"/>
+			destdir="bin">
+			<classpath refid="idpnado.classpath"/>
+		</javac>
 	</target>
 
 	<target name="clean">
